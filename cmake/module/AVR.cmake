@@ -1,19 +1,20 @@
 find_program(AVR_OBJDUMP avr-objdump REQUIRED)
 find_program(AVR_OBJCOPY avr-objcopy REQUIRED)
+find_program(AVR_SIZE avr-size REQUIRED)
 find_program(AVR_FLASH avrdude REQUIRED)
 
 function(AddExecutableAVR)
-    set(oneValueArgs NAME)
+    set(oneValueArgs TARGET)
     set(multiValueArgs 
             SOURCES INCLUDE_DIRECTORIES LIBRARIES 
             COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS)
     cmake_parse_arguments(AVR "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # File outputs
-    set(elf_file "${AVR_NAME}.elf")
-    set(map_file "${AVR_NAME}.map")
-    set(hex_file "${AVR_NAME}.hex")
-    set(lst_file "${AVR_NAME}.lst")
+    set(elf_file "${AVR_TARGET}.elf")
+    set(map_file "${AVR_TARGET}.map")
+    set(hex_file "${AVR_TARGET}.hex")
+    set(lst_file "${AVR_TARGET}.lst")
 
     # Executable target
     add_executable("${elf_file}" "${AVR_SOURCES}")
@@ -29,6 +30,26 @@ function(AddExecutableAVR)
     target_link_options("${elf_file}" PRIVATE 
         "${AVR_LINK_OPTIONS}"
         "LINKER:-Map,${map_file}"
+    )
+
+    # Generate lst file
+    add_custom_command(
+        OUTPUT "${lst_file}"
+        COMMAND "${AVR_OBJDUMP}" -h -S "${elf_file}" > "${lst_file}"
+        DEPENDS "${elf_file}"
+    )
+
+    # Create hex file
+    add_custom_command(
+        OUTPUT "${hex_file}"
+        COMMAND "${AVR_OBJCOPY}" -j .text -j .data -O ihex "${elf_file}" "${hex_file}"
+        DEPENDS "${elf_file}"
+    )
+
+    # Print elf file size and Flash AVR
+    add_custom_target("${AVR_TARGET}"
+        COMMAND "${AVR_SIZE}" -C "--mcu=${MCU}" "${elf_file}"
+        DEPENDS "${lst_file}" "${hex_file}"
     )
 
 endfunction()
