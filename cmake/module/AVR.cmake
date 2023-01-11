@@ -1,3 +1,7 @@
+find_program(AVR_OBJDUMP avr-objdump REQUIRED)
+find_program(AVR_OBJCOPY avr-objcopy REQUIRED)
+find_program(AVR_FLASH avrdude REQUIRED)
+
 function(AddExecutableAVR)
     set(oneValueArgs NAME)
     set(multiValueArgs 
