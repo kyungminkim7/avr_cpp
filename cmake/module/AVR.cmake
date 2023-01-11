@@ -4,7 +4,7 @@ find_program(AVR_SIZE avr-size REQUIRED)
 find_program(AVR_FLASH avrdude REQUIRED)
 
 function(AddExecutableAVR)
-    set(oneValueArgs TARGET)
+    set(oneValueArgs TARGET MCU PROGRAMMER_TYPE)
     set(multiValueArgs 
             SOURCES INCLUDE_DIRECTORIES LIBRARIES 
             COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS)
@@ -48,7 +48,8 @@ function(AddExecutableAVR)
 
     # Print elf file size and Flash AVR
     add_custom_target("${AVR_TARGET}"
-        COMMAND "${AVR_SIZE}" -C "--mcu=${MCU}" "${elf_file}"
+        COMMAND "${AVR_SIZE}" -C "--mcu=${AVR_MCU}" "${elf_file}"
+        COMMAND "${AVR_FLASH}" -c "${AVR_PROGRAMMER_TYPE}" -p "${AVR_MCU}" -U "flash:w:${hex_file}"
         DEPENDS "${lst_file}" "${hex_file}"
     )
 
