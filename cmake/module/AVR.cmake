@@ -10,6 +10,23 @@ function(AddExecutableAVR)
             COMPILE_DEFINITIONS COMPILE_OPTIONS LINK_OPTIONS)
     cmake_parse_arguments(AVR "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    # Validate arguments
+    if(NOT DEFINED AVR_TARGET)
+        message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} - TARGET not provided")
+    endif()
+
+    if(NOT DEFINED AVR_MCU)
+        message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} - MCU not provided")
+    endif()
+
+    if(NOT DEFINED AVR_PROGRAMMER_TYPE)
+        message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} - PROGRAMMER_TYPE not provided")
+    endif()
+
+    if(NOT DEFINED AVR_SOURCES)
+        message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} - SOURCES not provided")
+    endif()
+
     # File outputs
     set(elf_file "${AVR_TARGET}.elf")
     set(map_file "${AVR_TARGET}.map")
