@@ -1,0 +1,10 @@
+include(AVR)
+
+AddExecutableAVR(
+    TARGET app
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES main.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
