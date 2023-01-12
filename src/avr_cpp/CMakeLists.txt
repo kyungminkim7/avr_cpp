@@ -15,6 +15,6 @@ target_compile_options(avr_cpp PUBLIC
 )
 
 target_compile_definitions(avr_cpp PUBLIC
-    "F_CPU=${F_CPU}"
+    "F_CPU=${CPU_FREQ}"
     "BAUD=${BAUD}"
 )
