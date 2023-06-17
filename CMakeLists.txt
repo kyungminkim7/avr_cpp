@@ -12,7 +12,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/module")
 #----------------------------
 # Global Options
 #----------------------------
-set(MCU atmega168p CACHE STRING "Atmel microcontroller type")
+set(MCU atmega168 CACHE STRING "Atmel microcontroller type")
 set(CPU_FREQ 1000000UL CACHE STRING "Clock frequency")
 set(BAUD 9600UL CACHE STRING "Baud rate")
 
