@@ -1,5 +1,6 @@
-# avr_cpp library to link against
-add_subdirectory(avr_cpp)
+# MCU-specific targets
+if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
+    add_subdirectory(avr_cpp)
 
-# Executable apps
-add_subdirectory(app)
+    add_subdirectory(app)
+endif()

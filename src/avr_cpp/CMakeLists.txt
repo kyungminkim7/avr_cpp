@@ -7,14 +7,14 @@ target_include_directories(avr_cpp PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
 )
 
+target_compile_definitions(avr_cpp PUBLIC
+    "F_CPU=${CPU_FREQ}"
+    "BAUD=${BAUD}"
+)
+
 target_compile_options(avr_cpp PUBLIC
     "-fdata-sections"
     "-ffunction-sections"
     "-fno-exceptions"
     "-mmcu=${MCU}"
-)
-
-target_compile_definitions(avr_cpp PUBLIC
-    "F_CPU=${CPU_FREQ}"
-    "BAUD=${BAUD}"
 )

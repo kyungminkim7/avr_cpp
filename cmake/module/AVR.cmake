@@ -34,7 +34,7 @@ function(AddExecutableAVR)
     set(lst_file "${AVR_TARGET}.lst")
 
     # Executable target
-    add_executable("${elf_file}" "${AVR_SOURCES}")
+    add_executable("${elf_file}" EXCLUDE_FROM_ALL "${AVR_SOURCES}")
 
     target_include_directories("${elf_file}" PRIVATE "${AVR_INCLUDE_DIRECTORIES}")
 
