@@ -1,5 +1,5 @@
 add_library(avr_cpp OBJECT
-    usart.cpp
+    port.cpp
 )
 
 target_include_directories(avr_cpp PUBLIC
@@ -16,5 +16,10 @@ target_compile_options(avr_cpp PUBLIC
     "-fdata-sections"
     "-ffunction-sections"
     "-fno-exceptions"
-    "-mmcu=${MCU}"
 )
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
+    target_compile_options(avr_cpp PUBLIC "-mmcu=${MCU}")
+else()
+    add_subdirectory(test)
+endif()
