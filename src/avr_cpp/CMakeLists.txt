@@ -1,5 +1,6 @@
-add_library(avr_cpp OBJECT
-    port.cpp
+add_library(avr_cpp
+    abstract.cpp
+    memory.cpp
 )
 
 target_include_directories(avr_cpp PUBLIC
@@ -19,7 +20,11 @@ target_compile_options(avr_cpp PUBLIC
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
+    # AVR build options
     target_compile_options(avr_cpp PUBLIC "-mmcu=${MCU}")
+
+    # Enable memory allocation/deallocation
+    target_link_options(avr_cpp PUBLIC "LINKER:--defsym=__heap_end=0")
 else()
     add_subdirectory(test)
 endif()
