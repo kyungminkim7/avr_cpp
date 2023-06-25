@@ -1,8 +1,8 @@
 include(Testing)
 
 add_googletest(
-    TARGET test_port
-    SOURCE_FILES test_port.cpp
+    TARGET test_digital_port
+    SOURCE_FILES test_digital_port.cpp
     LIBRARIES avr_cpp
 )
 
