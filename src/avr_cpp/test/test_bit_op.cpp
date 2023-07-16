@@ -23,69 +23,76 @@ TEST(ConvertBitPosition, ReturnsValueWithBitPositionSet) {
     ASSERT_THAT(convertBitPosition<uint8_t>(6), Eq(0b0100'0000));
 }
 
-class SetBit : public Test {
+class SetBits : public Test {
 public:
     uint8_t value = NO_BITS_SET;
 };
 
-TEST_F(SetBit, SetsOneBit) {
-    setBit(value, 3);
+TEST_F(SetBits, SetsOneBit) {
+    setBits(value, 3);
 
     ASSERT_THAT(value, Eq(0b1000));
 }
 
-TEST_F(SetBit, DoesNotChangeAlreadySetBit) {
-    setBit(value, 4);
+TEST_F(SetBits, DoesNotChangeAlreadySetBits) {
+    setBits(value, 4);
 
-    setBit(value, 4);
+    setBits(value, 4);
 
     ASSERT_THAT(value, Eq(0x10));
 }
 
-TEST_F(SetBit, SetsMultipleBits) {
-    setBit(value, 5);
-    setBit(value, 0);
+TEST_F(SetBits, SetsMultipleBits) {
+    setBits(value, 5, 0, 3);
 
-    ASSERT_THAT(value, Eq(0x21));
+    ASSERT_THAT(value, Eq(0b0010'1001));
 }
 
-class UnsetBit : public Test {
+TEST_F(SetBits, IgnoresOutOfRangeBits) {
+    setBits(value, -1, 8);
+
+    ASSERT_THAT(value, Eq(NO_BITS_SET));
+}
+
+class UnsetBits : public Test {
 public:
     uint8_t value = ALL_BITS_SET;
 };
 
-TEST_F(UnsetBit, UnsetsOneBit) {
-    unsetBit(value, 0);
+TEST_F(UnsetBits, UnsetsOneBit) {
+    unsetBits(value, 0);
 
-    ASSERT_THAT(value, Eq(0xFE));
+    ASSERT_THAT(value, Eq(0b1111'1110));
 }
 
-TEST_F(UnsetBit, DoesNotChangeAlreadyUnsetBit) {
-    unsetBit(value, 5);
+TEST_F(UnsetBits, DoesNotChangeAlreadyUnsetBit) {
+    unsetBits(value, 5);
 
-    unsetBit(value, 5);
+    unsetBits(value, 5);
 
     ASSERT_THAT(value, Eq(0b1101'1111));
 }
 
-TEST_F(UnsetBit, UnsetsMultipleBits) {
-    unsetBit(value, 7);
-    unsetBit(value, 3);
+TEST_F(UnsetBits, UnsetsMultipleBits) {
+    unsetBits(value, 7, 1, 3);
 
-    ASSERT_THAT(value, Eq(0x77));
+    ASSERT_THAT(value, Eq(0b0111'0101));
 }
 
-class GetBit : public Test {
-public:
-    uint8_t value = ALL_BITS_SET;
-};
+TEST_F(UnsetBits, IgnoresOutOfRangeBits) {
+    unsetBits(value, -1, 10);
 
-TEST_F(GetBit, ReturnsFalseForLowBitValue) {
-    unsetBit(value, 4);
+    ASSERT_THAT(value, Eq(ALL_BITS_SET));
+}
+
+TEST(GetBit, ReturnsFalseForLowBitValue) {
+    uint8_t value = NO_BITS_SET;
 
     ASSERT_FALSE(getBit(value, 4));
 }
 
-TEST_F(GetBit, ReturnsTrueForHighBitValue) {
+TEST(GetBit, ReturnsTrueForHighBitValue) {
+    uint8_t value = ALL_BITS_SET;
+
     ASSERT_TRUE(getBit(value, 4));
 }
