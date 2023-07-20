@@ -49,13 +49,13 @@ DigitalPort<T>::DigitalPort(volatile T *pinModes, volatile T *pins) :
 template<typename T>
 template<typename... PinNumbers>
 void DigitalPort<T>::configureInputPins(PinNumbers... pinNumbers) {
-    unsetBits(*pinModes, pinNumbers...);
+    unsetBitsInRange(*pinModes, pinNumbers...);
 }
 
 template<typename T>
 template<typename... PinNumbers>
 void DigitalPort<T>::configureOutputPins(PinNumbers... pinNumbers) {
-    setBits(*pinModes, pinNumbers...);
+    setBitsInRange(*pinModes, pinNumbers...);
 }
 
 template<typename T>
@@ -77,8 +77,8 @@ void DigitalPort<T>::writePin(unsigned int pin, bool value) {
     }
 
     value ? 
-        setBits(*pins, pin) : 
-        unsetBits(*pins, pin);
+        setBitsInRange(*pins, pin) : 
+        unsetBitsInRange(*pins, pin);
 }
 
 } // namespace avr_cpp
