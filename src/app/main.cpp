@@ -6,8 +6,8 @@ using namespace avr_cpp;
 
 int main() {
     auto a = new int(8);
-    DigitalPort<uint8_t> port(&DDRB, &PORTB);
-    port.configurePin(0, PinMode::Output);
+    DigitalPinBank<uint8_t> port(&DDRB, &PORTB);
+    port.configureOutputPins(0);
     port.writePin(0, true);
 
     return 0;
