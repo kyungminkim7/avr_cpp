@@ -16,7 +16,7 @@ enable_testing()
 #----------------------------
 set(MCU atmega168 CACHE STRING "Atmel microcontroller type")
 set(CPU_FREQ 1000000UL CACHE STRING "Clock frequency")
-set(BAUD 9600UL CACHE STRING "Baud rate")
+set(NUM_USART_MODULES 1 CACHE STRING "Number of USART Modules")
 
 set(PROGRAMMER_TYPE usbtiny CACHE STRING "Programmer type")
 

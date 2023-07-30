@@ -1,0 +1,159 @@
+#include <avr_cpp/usart${n}.h>
+
+#include <avr/io.h>
+
+#include <avr_cpp/bit_op.h>
+
+namespace {
+
+using namespace avr_cpp;
+
+void enableTransmitter() {
+    setBits(UCSR${n}B, TXEN${n});
+}
+
+void disableTransmitter() {
+    unsetBits(UCSR${n}B, TXEN${n});
+}
+
+void enableReceiver() {
+    setBits(UCSR${n}B, RXEN${n});
+}
+
+void disableReceiver() {
+    unsetBits(UCSR${n}B, RXEN${n});
+}
+
+unsigned long calculateNormalSpeedBaudRateRegister(unsigned long baudRate, 
+                                                   unsigned long systemClockFreq) {
+    return (systemClockFreq + 8ul * baudRate) / (16ul * baudRate) - 1ul;
+}
+
+unsigned long calculateDoubleSpeedBaudRateRegister(unsigned long baudRate, 
+                                                   unsigned long systemClockFreq) {
+    return (systemClockFreq + 4ul * baudRate) / (8ul * baudRate) - 1ul;
+}
+
+template<typename T>
+bool requiresDoubleSpeedOperation(unsigned long baudRate, 
+                                  unsigned int baudTolerancePercent, 
+                                  unsigned long systemClockFreq,
+                                  T baudRateRegisterValue) {
+    constexpr static auto PERCENT_MULTIPLIER = 100ul;
+
+    const auto baudRateClock = 16ul * (baudRateRegisterValue + 1ul) * baudRate;
+
+    const auto minBaudRate = baudRateClock * 
+        (PERCENT_MULTIPLIER - baudTolerancePercent);
+
+    const auto maxBaudRate = baudRateClock * 
+        (PERCENT_MULTIPLIER + baudTolerancePercent);
+
+    systemClockFreq *= PERCENT_MULTIPLIER;
+
+    return systemClockFreq < minBaudRate ||
+        systemClockFreq > maxBaudRate;
+}
+
+void setNormalSpeedOperations() {
+    unsetBits(UCSR${n}A, U2X${n});
+}
+
+void setDoubleSpeedOperations() {
+    setBits(UCSR${n}A, U2X${n});
+}
+
+void setBaudRate(unsigned long baudRate, unsigned int baudTolerancePercent,
+                 unsigned long systemClockFreq) {
+    UBRR${n} = calculateNormalSpeedBaudRateRegister(baudRate, systemClockFreq);
+
+    if (requiresDoubleSpeedOperation(baudRate, baudTolerancePercent, 
+                                     systemClockFreq, UBRR${n})) {
+        UBRR${n} = calculateDoubleSpeedBaudRateRegister(baudRate, systemClockFreq);
+        setDoubleSpeedOperations();
+    } else {
+        setNormalSpeedOperations();
+    }
+}
+
+void setDataSize(Usart::DataSize size) {
+    switch (size)
+    {
+    case Usart::DataSize::FiveBits:
+        unsetBits(UCSR${n}B, UCSZ${n}2);
+        unsetBits(UCSR${n}C, UCSZ${n}1, UCSZ${n}0);
+        break;
+
+    case Usart::DataSize::SixBits:
+        unsetBits(UCSR${n}B, UCSZ${n}2);
+        unsetBits(UCSR${n}C, UCSZ${n}1);
+        setBits(UCSR${n}C, UCSZ${n}0);
+        break;
+
+    case Usart::DataSize::SevenBits:
+        unsetBits(UCSR${n}B, UCSZ${n}2);
+        setBits(UCSR${n}C, UCSZ${n}1);
+        unsetBits(UCSR${n}C, UCSZ${n}0);
+        break;
+
+    case Usart::DataSize::EightBits:
+        unsetBits(UCSR${n}B, UCSZ${n}2);
+        setBits(UCSR${n}C, UCSZ${n}1, UCSZ${n}0);
+        break;
+
+    case Usart::DataSize::NineBits:
+        setBits(UCSR${n}B, UCSZ${n}2);
+        setBits(UCSR${n}C, UCSZ${n}1, UCSZ${n}0);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+void setNumStopBits(Usart::NumStopBits numStopBits) {
+    switch (numStopBits) {
+    case Usart::NumStopBits::One:
+        unsetBits(UCSR${n}C, USBS${n});
+        break;
+
+    case Usart::NumStopBits::Two:
+        setBits(UCSR${n}C, USBS${n});
+        break;
+    
+    default:
+        break;
+    }
+}
+
+} // namespace
+
+namespace avr_cpp {
+
+Usart${n}::Usart${n}(Usart::DataSize dataSize, Usart::NumStopBits numStopBits, 
+                     unsigned long baudRate, unsigned int baudTolerancePercent,
+                     unsigned long systemClockFreq) {
+    enableTransmitter();
+    enableReceiver();
+
+    setDataSize(dataSize);
+    setNumStopBits(numStopBits);
+    setBaudRate(baudRate, baudTolerancePercent, systemClockFreq);
+}
+
+Usart${n}::~Usart${n}() {
+    disableReceiver();
+    disableTransmitter();
+}
+
+uint8_t Usart${n}::receiveByte() {
+    loop_until_bit_is_set(UCSR${n}A, RXC${n});
+    return UDR${n};
+}
+
+void Usart${n}::sendByte(uint8_t data) {
+    loop_until_bit_is_set(UCSR${n}A, UDRE${n});
+    UDR${n} = data;
+}
+
+} // namespace avr_cpp
