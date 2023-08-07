@@ -1,5 +1,10 @@
 #include <avr/io.h>
 
+// Digital I/O
+volatile uint8_t DDRB = 0;
+volatile uint8_t PINB = 0;
+volatile uint8_t PORTB = 0;
+
 // Baud rate
 volatile uint16_t UBRR0 = 0;
 
