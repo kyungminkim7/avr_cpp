@@ -3,8 +3,11 @@
 #include <avr_cpp/port.h>
 #include <avr_cpp/usart0.h>
 
-
 using namespace avr_cpp;
+
+struct MyStruct {
+    int x = 0;
+};
 
 int main() {
     Port<> port(DDRB, PINB, PORTB);

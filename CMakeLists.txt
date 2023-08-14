@@ -23,4 +23,5 @@ set(PROGRAMMER_TYPE usbtiny CACHE STRING "Programmer type")
 #----------------------------
 # Subdirectories
 #----------------------------
+add_subdirectory(extern)
 add_subdirectory(src bin)
