@@ -3,11 +3,9 @@
 #include <avr_cpp/port.h>
 #include <avr_cpp/usart0.h>
 
-using namespace avr_cpp;
+#include <etl/vector.h>
 
-struct MyStruct {
-    int x = 0;
-};
+using namespace avr_cpp;
 
 int main() {
     Port<> port(DDRB, PINB, PORTB);
@@ -17,6 +15,8 @@ int main() {
                  Usart::NumStopBits::one, 9600);
 
     port.setOutputPinsHigh(0, 1);
+
+    etl::vector<int, 3> v(3);
 
 
     while (true) {

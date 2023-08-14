@@ -1,11 +1,8 @@
+include(GetETL)
+
 add_library(avr_cpp
     abstract.cpp
     memory.cpp
-)
-
-target_include_directories(avr_cpp PUBLIC
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-    "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
 )
 
 # Generate USART source/header files
@@ -15,6 +12,13 @@ foreach(n RANGE ${USART_END})
     configure_file(usartn.cpp.in "${CMAKE_CURRENT_BINARY_DIR}/usart${n}.cpp")
     target_sources(avr_cpp PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/usart${n}.cpp")
 endforeach()
+
+target_include_directories(avr_cpp PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
+)
+
+target_link_libraries(avr_cpp PUBLIC etl::etl)
 
 target_compile_definitions(avr_cpp PUBLIC
     "F_CPU=${CPU_FREQ}"
@@ -29,6 +33,11 @@ target_compile_options(avr_cpp PUBLIC
 if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
     # AVR build options
     target_compile_options(avr_cpp PUBLIC "-mmcu=${MCU}")
+
+    target_compile_definitions(etl INTERFACE 
+        "ETL_NO_STL"
+        "ETL_NO_CPP_NAN_SUPPORT"
+    )
 
     # Enable memory allocation/deallocation
     target_link_options(avr_cpp PUBLIC "LINKER:--defsym=__heap_end=0")
