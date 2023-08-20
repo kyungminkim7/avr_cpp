@@ -1,4 +1,3 @@
-find_program(AVR_OBJDUMP avr-objdump REQUIRED)
 find_program(AVR_OBJCOPY avr-objcopy REQUIRED)
 find_program(AVR_SIZE avr-size REQUIRED)
 find_program(AVR_FLASH avrdude REQUIRED)
@@ -29,9 +28,7 @@ function(AddExecutableAVR)
 
     # File outputs
     set(elf_file "${AVR_TARGET}.elf")
-    set(map_file "${AVR_TARGET}.map")
     set(hex_file "${AVR_TARGET}.hex")
-    set(lst_file "${AVR_TARGET}.lst")
 
     # Executable target
     add_executable("${elf_file}" EXCLUDE_FROM_ALL "${AVR_SOURCES}")
@@ -44,30 +41,20 @@ function(AddExecutableAVR)
 
     target_compile_options("${elf_file}" PRIVATE "${AVR_COMPILE_OPTIONS}")
 
-    target_link_options("${elf_file}" PRIVATE 
-        "${AVR_LINK_OPTIONS}"
-        "LINKER:-Map,${map_file}"
-    )
-
-    # Generate lst file
-    add_custom_command(
-        OUTPUT "${lst_file}"
-        COMMAND "${AVR_OBJDUMP}" -h -S "${elf_file}" > "${lst_file}"
-        DEPENDS "${elf_file}"
-    )
+    target_link_options("${elf_file}" PRIVATE "${AVR_LINK_OPTIONS}")
 
     # Create hex file
     add_custom_command(
         OUTPUT "${hex_file}"
-        COMMAND "${AVR_OBJCOPY}" -j .text -j .data -O ihex "${elf_file}" "${hex_file}"
+        COMMAND "${AVR_OBJCOPY}" -O ihex -R .eeprom "${elf_file}" "${hex_file}"
         DEPENDS "${elf_file}"
     )
 
     # Print elf file size and Flash AVR
     add_custom_target("${AVR_TARGET}"
         COMMAND "${AVR_SIZE}" -C "--mcu=${AVR_MCU}" "${elf_file}"
-        COMMAND "${AVR_FLASH}" -c "${AVR_PROGRAMMER_TYPE}" -p "${AVR_MCU}" -U "flash:w:${hex_file}"
-        DEPENDS "${lst_file}" "${hex_file}"
+        COMMAND "${AVR_FLASH}" -c "${AVR_PROGRAMMER_TYPE}" -p "${AVR_MCU}" -U "flash:w:${hex_file}:i"
+        DEPENDS "${hex_file}"
     )
 
 endfunction()

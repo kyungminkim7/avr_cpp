@@ -24,10 +24,17 @@ target_compile_definitions(avr_cpp PUBLIC
     "F_CPU=${CPU_FREQ}"
 )
 
-target_compile_options(avr_cpp PUBLIC
-    "-fdata-sections"
-    "-ffunction-sections"
-    "-fno-exceptions"
+target_compile_options(avr_cpp 
+    PUBLIC
+        "-fdata-sections"
+        "-ffunction-sections"
+        "-fno-exceptions"
+        "-fno-threadsafe-statics"
+        "-Wall"
+        "-Wextra"
+        "-Wpedantic"
+    PRIVATE
+        "-Werror"
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
@@ -39,8 +46,12 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
         "ETL_NO_CPP_NAN_SUPPORT"
     )
 
-    # Enable memory allocation/deallocation
-    target_link_options(avr_cpp PUBLIC "LINKER:--defsym=__heap_end=0")
+    target_link_options(avr_cpp PUBLIC
+        "-flto"
+        "-fuse-linker-plugin"
+        "-Wl,--gc-sections"
+        "-mmcu=atmega168"
+    )
 else()
     # Enable unit tests for host machine builds
     target_link_libraries(avr_cpp PUBLIC avr_stub)
