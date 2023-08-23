@@ -1,6 +1,12 @@
 include(Testing)
 
 add_googletest(
+    TARGET test_analog_digital_converter
+    SOURCE_FILES test_analog_digital_converter.cpp
+    LIBRARIES avr_cpp
+)
+
+add_googletest(
     TARGET test_bit_op
     SOURCE_FILES test_bit_op.cpp
     LIBRARIES avr_cpp

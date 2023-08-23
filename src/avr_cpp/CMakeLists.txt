@@ -1,6 +1,7 @@
 include(GetETL)
 
 add_library(avr_cpp
+    analog_digital_converter.cpp
     abstract.cpp
     memory.cpp
 )

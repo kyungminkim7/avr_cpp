@@ -59,3 +59,13 @@ extern volatile uint8_t UCSR0C;
 #define UCSZ00 1
 #define UCSZ01 2
 #define UCSZ02 2
+
+// Analog Digital Converter
+extern volatile uint8_t ADCSRA;
+#define ADPS2 2
+#define ADPS1 1
+#define ADPS0 0
+
+extern volatile uint8_t ADMUX;
+#define REFS1 7
+#define REFS0 6

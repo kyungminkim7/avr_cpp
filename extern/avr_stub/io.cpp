@@ -14,3 +14,7 @@ volatile uint8_t UDR0 = 0;
 volatile uint8_t UCSR0A = 0;
 volatile uint8_t UCSR0B = 0;
 volatile uint8_t UCSR0C = 0;
+
+// Analog Digital Converter
+volatile uint8_t ADCSRA = 0;
+volatile uint8_t ADMUX = 0;
