@@ -11,8 +11,8 @@ int main() {
     Port<> port(DDRB, PINB, PORTB);
     port.configureOutputPins(0, 1, 2);
 
-    Usart0 usart(Usart::DataSize::eightBits,
-                 Usart::NumStopBits::one, 9600);
+    Usart0 usart(Usart::DataSize::EightBits,
+                 Usart::NumStopBits::One, 9600);
 
     port.setOutputPinsHigh(0, 1);
 

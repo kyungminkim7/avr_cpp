@@ -1,25 +1,29 @@
-include(Testing)
+include(CMakePackageConfigHelpers)
+include(GoogleTest)
 
-add_googletest(
-    TARGET test_analog_digital_converter
-    SOURCE_FILES test_analog_digital_converter.cpp
-    LIBRARIES avr_cpp
-)
+add_subdirectory(avr_cpp_test)
 
-add_googletest(
-    TARGET test_bit_op
-    SOURCE_FILES test_bit_op.cpp
-    LIBRARIES avr_cpp
-)
+function(add_avr_test)
+    set(optionalArgs "")
+    set(oneValueArgs TARGET SOURCE)
+    set(multipleValueArgs "")
+    cmake_parse_arguments(AVRTEST
+        "${optionalArgs}" "${oneValueArgs}" "${multipleValueArgs}" "${ARGV}"
+    )
 
-add_googletest(
-    TARGET test_port
-    SOURCE_FILES test_port.cpp
-    LIBRARIES avr_cpp
-)
+    add_executable(${AVRTEST_TARGET} ${AVRTEST_SOURCE})
+    target_link_libraries(${AVRTEST_TARGET} avr_cpp_test)
+    gtest_discover_tests(${AVRTEST_TARGET})
+endfunction()
 
-add_googletest(
-    TARGET test_usart
-    SOURCE_FILES test_usart.cpp
-    LIBRARIES avr_cpp
-)
+add_avr_test(TARGET test_analog_digital_converter 
+             SOURCE test_analog_digital_converter.cpp)
+
+add_avr_test(TARGET test_bit_op 
+             SOURCE test_bit_op.cpp)
+
+add_avr_test(TARGET test_port 
+             SOURCE test_port.cpp)
+
+add_avr_test(TARGET test_usart 
+             SOURCE test_usart.cpp)

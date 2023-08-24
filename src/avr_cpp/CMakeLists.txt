@@ -55,6 +55,5 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
     )
 else()
     # Enable unit tests for host machine builds
-    target_link_libraries(avr_cpp PUBLIC avr_stub)
     add_subdirectory(test)
 endif()

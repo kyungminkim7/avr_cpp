@@ -1,4 +1,3 @@
-# AVR stub library for unit testing on host machine builds
 add_library(avr_stub
     io.cpp
 )
