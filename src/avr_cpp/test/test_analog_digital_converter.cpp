@@ -4,6 +4,7 @@
 
 #include <avr_cpp/analog_digital_converter.h>
 #include <avr_cpp/bit_op.h>
+#include <avr_cpp/matchers.h>
 
 using namespace ::testing;
 using namespace avr_cpp;
@@ -23,7 +24,7 @@ TEST_F(SetVoltageReference, AREF) {
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AREF,
                                CLOCK_PRESCALER);
 
-    ASSERT_TRUE(areAllBitsUnset(ADMUX, REFS1, REFS0));
+    ASSERT_THAT(ADMUX, BitsAreUnset(REFS1, REFS0));
 }
 
 TEST_F(SetVoltageReference, AVCC) {
@@ -55,7 +56,7 @@ TEST_F(SetClockPrescaler, Two) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::Two);
 
-    ASSERT_TRUE(areAllBitsUnset(ADCSRA, ADPS2, ADPS1, ADPS0));
+    ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS2, ADPS1, ADPS0));
 }
 
 TEST_F(SetClockPrescaler, Four) {

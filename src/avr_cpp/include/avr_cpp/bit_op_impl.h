@@ -59,35 +59,4 @@ bool getBit(const T &value, unsigned int bit) {
     return value & createBitMask<T>(bit);
 }
 
-template<typename T>
-bool areAllBitsSet(const T &value) {
-    return value == static_cast<T>(
-        ~static_cast<T>(0));
-}
-
-template<typename T, typename Bit>
-bool areAllBitsSet(const T &value, Bit bit) {
-    return getBit(value, bit);
-}
-
-template<typename T, typename Bit, typename... Bits>
-bool areAllBitsSet(const T &value, Bit bit, Bits... bits) {
-    return areAllBitsSet(value, bit) && areAllBitsSet(value, bits...);
-}
-
-template<typename T>
-bool areAllBitsUnset(const T &value) {
-    return value == static_cast<T>(0);
-}
-
-template<typename T, typename Bit>
-bool areAllBitsUnset(const T &value, Bit bit) {
-    return !getBit(value, bit);
-}
-
-template<typename T, typename Bit, typename... Bits>
-bool areAllBitsUnset(const T &value, Bit bit, Bits... bits) {
-    return areAllBitsUnset(value, bit) && areAllBitsUnset(value, bits...);
-}
-
 } // namespace avr_cpp

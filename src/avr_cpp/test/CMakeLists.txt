@@ -1,6 +1,8 @@
 include(CMakePackageConfigHelpers)
 include(GoogleTest)
 
+include(GetGoogleTest)
+
 add_subdirectory(avr_cpp_test)
 
 function(add_avr_test)
@@ -12,7 +14,12 @@ function(add_avr_test)
     )
 
     add_executable(${AVRTEST_TARGET} ${AVRTEST_SOURCE})
-    target_link_libraries(${AVRTEST_TARGET} avr_cpp_test)
+    target_link_libraries(${AVRTEST_TARGET} 
+        avr_cpp_test
+        gmock
+        gtest
+        gtest_main
+    )
     gtest_discover_tests(${AVRTEST_TARGET})
 endfunction()
 

@@ -4,6 +4,7 @@
 
 #include <avr/io.h>
 
+#include <avr_cpp/matchers.h>
 #include <avr_cpp/port.h>
 
 using namespace ::testing;
@@ -53,19 +54,19 @@ public:
 TEST_F(ConfigureInputPins, UnsetsOneDataDirectionBit) {
     port.configureInputPins(DDB3);
 
-    ASSERT_TRUE(areAllBitsUnset(DDRB, DDB3));
+    ASSERT_THAT(DDRB, BitsAreUnset(DDB3));
 }
 
 TEST_F(ConfigureInputPins, UnsetsMultipleDataDirectionBits) {
     port.configureInputPins(DDB0, DDB4, DDB5);
 
-    ASSERT_TRUE(areAllBitsUnset(DDRB, DDB0, DDB4, DDB5));
+    ASSERT_THAT(DDRB, BitsAreUnset(DDB0, DDB4, DDB5));
 }
 
 TEST_F(ConfigureInputPins, UnsetsMultipleDataDirectionBitsOfAnyOrder) {
     port.configureInputPins(DDB3, DDB2, DDB5);
 
-    ASSERT_TRUE(areAllBitsUnset(DDRB, DDB3, DDB2, DDB5));
+    ASSERT_THAT(DDRB, BitsAreUnset(DDB3, DDB2, DDB5));
 }
 
 class ConfigureOutputPins : public Test {
@@ -82,19 +83,19 @@ public:
 TEST_F(ConfigureOutputPins, SetsOneDataDirectionBit) {
     port.configureOutputPins(DDB0);
 
-    ASSERT_TRUE(areAllBitsSet(DDRB, DDB0));
+    ASSERT_THAT(DDRB, BitsAreSet(DDB0));
 }
 
 TEST_F(ConfigureOutputPins, SetsMultipleDataDirectionBits) {
     port.configureOutputPins(DDB3, DDB1, DDB7);
 
-    ASSERT_TRUE(areAllBitsSet(DDRB, DDB1, DDB3, DDB7));
+    ASSERT_THAT(DDRB, BitsAreSet(DDB1, DDB3, DDB7));
 }
 
 TEST_F(ConfigureOutputPins, SetsMultipleDataDirectionBitsOfAnyOrder) {
     port.configureOutputPins(DDB3, DDB2, DDB5);
 
-    ASSERT_TRUE(areAllBitsSet(DDRB, DDB3, DDB2, DDB5));
+    ASSERT_THAT(DDRB, BitsAreSet(DDB3, DDB2, DDB5));
 }
 
 TEST(ConfigurePins, SetsDataDirectionRegister) {
@@ -140,19 +141,19 @@ public:
 TEST_F(SetOutputPinsLow, unsetsOnePin) {
     port.setOutputPinsLow(PB3);
 
-    ASSERT_TRUE(areAllBitsUnset(PORTB, PB3));
+    ASSERT_THAT(PORTB, BitsAreUnset(PB3));
 }
 
 TEST_F(SetOutputPinsLow, unsetsMultiplePins) {
     port.setOutputPinsLow(PB1, PB5);
 
-    ASSERT_TRUE(areAllBitsUnset(PORTB, PB1, PB5));
+    ASSERT_THAT(PORTB, BitsAreUnset(PB1, PB5));
 }
 
 TEST_F(SetOutputPinsLow, unsetsMultiplePinsOfAnyOrder) {
     port.setOutputPinsLow(PB4, PB3, PB6);
 
-    ASSERT_TRUE(areAllBitsUnset(PORTB, PB4, PB3, PB6));
+    ASSERT_THAT(PORTB, BitsAreUnset(PB4, PB3, PB6));
 }
 
 class SetOutputPinsHigh : public Test {
@@ -168,19 +169,19 @@ public:
 TEST_F(SetOutputPinsHigh, SetsOnePin) {
     port.setOutputPinsHigh(PB2);
 
-    ASSERT_TRUE(areAllBitsSet(PORTB, PB2));
+    ASSERT_THAT(PORTB, BitsAreSet(PB2));
 }
 
 TEST_F(SetOutputPinsHigh, SetsMultiplePins) {
     port.setOutputPinsHigh(PB1, PB2);
 
-    ASSERT_TRUE(areAllBitsSet(PORTB, PB1, PB2));
+    ASSERT_THAT(PORTB, BitsAreSet(PB1, PB2));
 }
 
 TEST_F(SetOutputPinsHigh, SetsMultiplePinsOfAnyOrder) {
     port.setOutputPinsHigh(PB4, PB3, PB6);
 
-    ASSERT_TRUE(areAllBitsSet(PORTB, PB4, PB3, PB6));
+    ASSERT_THAT(PORTB, BitsAreSet(PB4, PB3, PB6));
 }
 
 TEST(SetOutputPins, SetsOutputPins) {
@@ -205,13 +206,13 @@ public:
 TEST_F(EnableInputPinPullupResistors, SetsOneOutputPin) {
     port.enableInputPinPullupResistors(PINB2);
 
-    ASSERT_TRUE(areAllBitsSet(PORTB, PB2));
+    ASSERT_THAT(PORTB, BitsAreSet(PB2));
 }
 
 TEST_F(EnableInputPinPullupResistors, SetsMultipleOutputPins) {
     port.enableInputPinPullupResistors(PINB3, PINB4, PINB5);
 
-    ASSERT_TRUE(areAllBitsSet(PORTB, PB3, PB4, PB5));
+    ASSERT_THAT(PORTB, BitsAreSet(PB3, PB4, PB5));
 }
 
 class DisableInputPinPullupResistors : public Test {
@@ -227,13 +228,13 @@ public:
 TEST_F(DisableInputPinPullupResistors, UnsetsOneOutputPin) {
     port.disableInputPinPullupResistors(PINB2);
 
-    ASSERT_TRUE(areAllBitsUnset(PORTB, PB2));
+    ASSERT_THAT(PORTB, BitsAreUnset(PB2));
 }
 
 TEST_F(DisableInputPinPullupResistors, UnsetsMultipleOutputPins) {
     port.disableInputPinPullupResistors(PINB3, PINB4, PINB5);
 
-    ASSERT_TRUE(areAllBitsUnset(PORTB, PB3, PB4, PB5));
+    ASSERT_THAT(PORTB, BitsAreUnset(PB3, PB4, PB5));
 }
 
 TEST(SetInputPinPullupResistors, SetOutputPins) {

@@ -3,6 +3,7 @@
 #include <avr/io.h>
 
 #include <avr_cpp/bit_op.h>
+#include <avr_cpp/matchers.h>
 #include <avr_cpp/usart0.h>
 
 using namespace ::testing;
@@ -22,13 +23,13 @@ public:
 TEST_F(UsartInitialization, EnablesTransmitter) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsSet(UCSR0B, TXEN0));
+    ASSERT_THAT(UCSR0B, BitsAreSet(TXEN0));
 }
 
 TEST_F(UsartInitialization, EnablesReceiver) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsSet(UCSR0B, RXEN0));
+    ASSERT_THAT(UCSR0B, BitsAreSet(RXEN0));
 }
 
 class UsartDestruction : public Test {
@@ -43,11 +44,11 @@ public:
 };
 
 TEST_F(UsartDestruction, DisablesTransmitter) {
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, TXEN0));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(TXEN0));
 }
 
 TEST_F(UsartDestruction, DisablesReceiver) {
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, RXEN0));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(RXEN0));
 }
 
 class UsartSetNormalSpeedBaudRate : public Test {
@@ -76,7 +77,7 @@ TEST_F(UsartSetNormalSpeedBaudRate, unsetsDoubleSpeedOperationBit) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE, 
                  BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0A, U2X0));
+    ASSERT_THAT(UCSR0A, BitsAreUnset(U2X0));
 }
 
 class UsartSetDoubleSpeedBaudRate : public Test {
@@ -105,7 +106,7 @@ TEST_F(UsartSetDoubleSpeedBaudRate, setsDoubleSpeedOperationBit) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE,
                  BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
 
-    ASSERT_TRUE(areAllBitsSet(UCSR0A, U2X0));
+    ASSERT_THAT(UCSR0A, BitsAreSet(U2X0));
 }
 
 class UsartSetDataSize : public Test {
@@ -120,8 +121,8 @@ TEST_F(UsartSetDataSize, Set5Bits) {
 
     Usart0 usart(Usart::DataSize::FiveBits, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, UCSZ02));
-    ASSERT_TRUE(areAllBitsUnset(UCSR0C, UCSZ01, UCSZ00));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(UCSZ02));
+    ASSERT_THAT(UCSR0C, BitsAreUnset(UCSZ01, UCSZ00));
 }
 
 TEST_F(UsartSetDataSize, Set6Bits) {
@@ -131,9 +132,9 @@ TEST_F(UsartSetDataSize, Set6Bits) {
 
     Usart0 usart(Usart::DataSize::SixBits, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, UCSZ02));
-    ASSERT_TRUE(areAllBitsUnset(UCSR0C, UCSZ01));
-    ASSERT_TRUE(areAllBitsSet(UCSR0C, UCSZ00));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(UCSZ02));
+    ASSERT_THAT(UCSR0C, BitsAreUnset(UCSZ01));
+    ASSERT_THAT(UCSR0C, BitsAreSet(UCSZ00));
 }
 
 TEST_F(UsartSetDataSize, Set7Bits) {
@@ -143,9 +144,9 @@ TEST_F(UsartSetDataSize, Set7Bits) {
 
     Usart0 usart(Usart::DataSize::SevenBits, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, UCSZ02));
-    ASSERT_TRUE(areAllBitsSet(UCSR0C, UCSZ01));
-    ASSERT_TRUE(areAllBitsUnset(UCSR0C, UCSZ00));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(UCSZ02));
+    ASSERT_THAT(UCSR0C, BitsAreSet(UCSZ01));
+    ASSERT_THAT(UCSR0C, BitsAreUnset(UCSZ00));
 }
 
 TEST_F(UsartSetDataSize, Set8Bits) {
@@ -154,8 +155,8 @@ TEST_F(UsartSetDataSize, Set8Bits) {
 
     Usart0 usart(Usart::DataSize::EightBits, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0B, UCSZ02));
-    ASSERT_TRUE(areAllBitsSet(UCSR0C, UCSZ01, UCSZ00));
+    ASSERT_THAT(UCSR0B, BitsAreUnset(UCSZ02));
+    ASSERT_THAT(UCSR0C, BitsAreSet(UCSZ01, UCSZ00));
 }
 
 TEST_F(UsartSetDataSize, Set9Bits) {
@@ -164,8 +165,8 @@ TEST_F(UsartSetDataSize, Set9Bits) {
 
     Usart0 usart(Usart::DataSize::NineBits, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsSet(UCSR0B, UCSZ02));
-    ASSERT_TRUE(areAllBitsSet(UCSR0C, UCSZ01, UCSZ00));
+    ASSERT_THAT(UCSR0B, BitsAreSet(UCSZ02));
+    ASSERT_THAT(UCSR0C, BitsAreSet(UCSZ01, UCSZ00));
 }
 
 class UsartSetNumStopBits : public Test {
@@ -179,7 +180,7 @@ TEST_F(UsartSetNumStopBits, Sets1Bit) {
 
     Usart0 usart(DATA_SIZE, Usart::NumStopBits::One, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsUnset(UCSR0C, USBS0));
+    ASSERT_THAT(UCSR0C, BitsAreUnset(USBS0));
 }
 
 TEST_F(UsartSetNumStopBits, Sets2Bits) {
@@ -187,7 +188,7 @@ TEST_F(UsartSetNumStopBits, Sets2Bits) {
 
     Usart0 usart(DATA_SIZE, Usart::NumStopBits::Two, BAUD_RATE);
 
-    ASSERT_TRUE(areAllBitsSet(UCSR0C, USBS0));
+    ASSERT_THAT(UCSR0C, BitsAreSet(USBS0));
 }
 
 class UsartReceiveByte : public Test {
