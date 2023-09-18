@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include <etl/string_view.h>
+
 #include <avr_cpp/usart.h>
 
 namespace avr_cpp {
@@ -13,9 +15,11 @@ public:
               unsigned int baudTolerancePercent = Usart::DEFAULT_BAUD_TOLERANCE_PERCENT,
               unsigned long systemClockFreq = Usart::DEFAULT_SYSTEM_CLOCK_FREQ);
     ~Usart${n}();
-
-    uint8_t receiveByte();
-    void sendByte(uint8_t data);
 };
 
 } // namespace avr_cpp
+
+avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, uint8_t data);
+avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, etl::string_view view);
+
+avr_cpp::Usart${n}& operator>>(avr_cpp::Usart${n} &usart, uint8_t &data);

@@ -1,8 +1,10 @@
 #include <avr/io.h>
+#include <util/delay.h>
 
 #include <avr_cpp/port.h>
 #include <avr_cpp/usart0.h>
 
+#include <etl/string.h>
 #include <etl/vector.h>
 
 using namespace avr_cpp;
@@ -16,16 +18,11 @@ int main() {
 
     port.setOutputPinsHigh(0, 1);
 
-    etl::vector<int, 3> v(3);
-
-
     while (true) {
-        usart.sendByte('H');
-        usart.sendByte('e');
-        usart.sendByte('l');
-        usart.sendByte('l');
-        usart.sendByte('o');
-        usart.sendByte(' ');
+        usart.send(0x48);
+        usart.send("Hello ");
+        usart.send(etl::make_string("World\n"));
+        _delay_ms(500);
     }
 
     return 0;

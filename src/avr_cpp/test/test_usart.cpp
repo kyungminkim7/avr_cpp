@@ -35,11 +35,9 @@ TEST_F(UsartInitialization, EnablesReceiver) {
 class UsartDestruction : public Test {
 public:
     void SetUp() override {
-        static constexpr auto DATA_SIZE = Usart::DataSize::NineBits;
-        static constexpr auto BAUD_RATE = 115200;
-        static constexpr auto NUM_STOP_BITS = Usart::NumStopBits::Two;
-
-        Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
+        Usart0 usart(Usart::DataSize::NineBits, 
+                     Usart::NumStopBits::Two, 
+                     115200ul);
     }
 };
 
@@ -193,31 +191,32 @@ TEST_F(UsartSetNumStopBits, Sets2Bits) {
 
 class UsartReceiveByte : public Test {
 public:
-    static constexpr auto BAUD_RATE = 9600;
+    UsartReceiveByte() : usart(Usart::DataSize::EightBits,
+                               Usart::NumStopBits::One, 
+                               9600ul) { }
 
     Usart0 usart;
-
-    UsartReceiveByte() : usart(Usart::DataSize::EightBits,
-                               Usart::NumStopBits::One, BAUD_RATE) { }
 };
 
 TEST_F(UsartReceiveByte, ReturnsDataUponReceiveComplete) {
-    const uint8_t DATA = 0xAB;
+    const uint8_t EXPECTED_DATA = 0xAB;
 
-    UDR0 = DATA;
-    setBits(UCSR0A, RXC0);
+    UDR0 = EXPECTED_DATA;
+    setBits(UCSR0A, RXC0); // Signal that buffer contains data
 
-    ASSERT_THAT(usart.receiveByte(), Eq(DATA));
+    uint8_t actualData;
+    usart >> actualData;
+
+    ASSERT_THAT(actualData, Eq(EXPECTED_DATA));
 }
 
-class UsartSendByte : public Test {
+class UsartSendByte: public Test {
 public:
-    static constexpr auto BAUD_RATE = 11520;
+    UsartSendByte() : usart(Usart::DataSize::NineBits,
+                            Usart::NumStopBits::One,
+                            11520ul) { }
 
     Usart0 usart;
-
-    UsartSendByte() : usart(Usart::DataSize::NineBits,
-                            Usart::NumStopBits::One, BAUD_RATE) { }
 };
 
 TEST_F(UsartSendByte, SendsByteAfterDataRegisterIsEmpty) {
@@ -225,7 +224,7 @@ TEST_F(UsartSendByte, SendsByteAfterDataRegisterIsEmpty) {
 
     setBits(UCSR0A, UDRE0);
 
-    usart.sendByte(DATA);
+    usart << DATA;
 
     ASSERT_THAT(UDR0, Eq(DATA));
 }

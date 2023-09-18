@@ -146,14 +146,26 @@ Usart${n}::~Usart${n}() {
     disableTransmitter();
 }
 
-uint8_t Usart${n}::receiveByte() {
-    loop_until_bit_is_set(UCSR${n}A, RXC${n});
-    return UDR${n};
-}
+} // namespace avr_cpp
 
-void Usart${n}::sendByte(uint8_t data) {
+avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, uint8_t data) {
     loop_until_bit_is_set(UCSR${n}A, UDRE${n});
     UDR${n} = data;
+    return usart;
 }
 
-} // namespace avr_cpp
+avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, etl::string_view view) {
+    for (auto iter = view.cbegin(); 
+         iter != view.cend() && *iter != '\0';
+         ++iter) {
+        usart << *iter;
+    }
+
+    return usart;
+}
+
+avr_cpp::Usart${n}& operator>>(avr_cpp::Usart${n} &usart, uint8_t &data) {
+    loop_until_bit_is_set(UCSR${n}A, RXC${n});
+    data = UDR${n};
+    return usart;
+}
