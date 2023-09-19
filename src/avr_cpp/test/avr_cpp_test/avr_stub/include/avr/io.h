@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <stdint.h>
 
 #include "sfr_defs.h"
@@ -62,10 +63,24 @@ extern volatile uint8_t UCSR0C;
 
 // Analog Digital Converter
 extern volatile uint8_t ADCSRA;
-#define ADPS2 2
-#define ADPS1 1
-#define ADPS0 0
+#define ADEN    7
+#define ADSC    6
+#define ADATE   5
+#define ADIF    4
+#define ADIE    3
+#define ADPS2   2
+#define ADPS1   1
+#define ADPS0   0
 
 extern volatile uint8_t ADMUX;
-#define REFS1 7
-#define REFS0 6
+#define REFS1   7
+#define REFS0   6
+#define ADLAR   5
+#define MUX3    3
+#define MUX2    2
+#define MUX1    1
+#define MUX0    0
+
+extern volatile uint16_t ADC;
+extern volatile uint8_t &ADCH;
+extern volatile uint8_t &ADCL;

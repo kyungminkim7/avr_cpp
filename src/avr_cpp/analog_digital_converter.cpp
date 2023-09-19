@@ -59,9 +59,47 @@ void setClockPrescaler(AnalogDigitalConverter::ClockPrescaler clockPrescaler) {
         setBits(ADCSRA, ADPS2, ADPS1);
         break;
 
+    case AnalogDigitalConverter::ClockPrescaler::OneHundredTwentyEight:
+        setBits(ADCSRA, ADPS2, ADPS1, ADPS0);
+        break;
+
     default:
         break;
     }
+}
+
+void setTriggerMode(AnalogDigitalConverter::TriggerMode triggerMode) {
+    switch (triggerMode) {
+    case AnalogDigitalConverter::TriggerMode::Single:
+        unsetBits(ADCSRA, ADATE);
+        break;
+
+    case AnalogDigitalConverter::TriggerMode::Auto:
+        setBits(ADCSRA, ADATE);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+void setAdjustResult(AnalogDigitalConverter::AdjustResult adjustResult) {
+    switch (adjustResult) {
+    case AnalogDigitalConverter::AdjustResult::Right:
+        unsetBits(ADMUX, ADLAR);
+        break;
+
+    case AnalogDigitalConverter::AdjustResult::Left:
+        setBits(ADMUX, ADLAR);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+void enableAnalogDigitalConverter() {
+    setBits(ADCSRA, ADEN);
 }
     
 } // namespace
@@ -69,9 +107,44 @@ void setClockPrescaler(AnalogDigitalConverter::ClockPrescaler clockPrescaler) {
 namespace avr_cpp {
 
 AnalogDigitalConverter::AnalogDigitalConverter(AnalogDigitalConverter::VoltageReference voltageReference,
-                                               AnalogDigitalConverter::ClockPrescaler clockPrescaler) {
+                                               AnalogDigitalConverter::ClockPrescaler clockPrescaler,
+                                               AnalogDigitalConverter::TriggerMode triggerMode,
+                                               AnalogDigitalConverter::AdjustResult adjustResult) {
     setVoltageReference(voltageReference);
     setClockPrescaler(clockPrescaler);
+    setTriggerMode(triggerMode);
+    setAdjustResult(adjustResult);
+
+    enableAnalogDigitalConverter();
+}
+
+AnalogDigitalConverter::~AnalogDigitalConverter() {
+    unsetBits(ADCSRA, ADEN);
+}
+
+void AnalogDigitalConverter::startConversion() {
+    setBits(ADCSRA, ADSC);
+}
+
+bool AnalogDigitalConverter::isConversionInProgress() const {
+    return getBit(ADCSRA, ADSC);
+}
+
+uint16_t AnalogDigitalConverter::getResult() const {
+    return ADC;
+}
+
+uint8_t AnalogDigitalConverter::getResultHighByte() const {
+    return ADCH;
+}
+
+uint8_t AnalogDigitalConverter::getResultLowByte() const {
+    return ADCL;
+}
+
+void AnalogDigitalConverter::setChannel(int channel) {
+    ADMUX &= 0xf0;
+    ADMUX |= channel;
 }
 
 } // namespace avr_cpp
