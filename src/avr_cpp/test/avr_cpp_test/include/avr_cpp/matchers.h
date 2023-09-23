@@ -7,15 +7,14 @@
 
 namespace avr_cpp {
 
-template<typename T>
-void printArgs(std::ostream *os, T arg) {
-    *os << arg;
-}
-
 template<typename T, typename... Types>
 void printArgs(std::ostream *os, T arg, Types... args) {
-    *os << arg << ", ";
-    printArgs(os, args...);
+    if constexpr(sizeof...(args) == 0) {
+        *os << arg;
+    } else {
+        *os << arg << ", ";
+        printArgs(os, args...);
+    }
 }
 
 template<typename... T>
