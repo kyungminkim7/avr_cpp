@@ -3,6 +3,7 @@ include(GetETL)
 add_library(avr_cpp
     analog_digital_converter.cpp
     abstract.cpp
+    external_interrupt.cpp
     memory.cpp
 )
 

@@ -28,3 +28,7 @@ volatile uint8_t &ADCH = *(reinterpret_cast<volatile uint8_t *>(&ADC) +
 
 volatile uint8_t &ADCL = *(reinterpret_cast<volatile uint8_t *>(&ADC) + 
     (etl::endian::native == etl::endian::little ? 0 : 1));
+
+// External interrupts
+volatile uint8_t EIMSK = 0;
+volatile uint8_t EICRA = 0;

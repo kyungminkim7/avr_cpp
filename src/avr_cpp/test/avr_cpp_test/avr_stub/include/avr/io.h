@@ -84,3 +84,14 @@ extern volatile uint8_t ADMUX;
 extern volatile uint16_t ADC;
 extern volatile uint8_t &ADCH;
 extern volatile uint8_t &ADCL;
+
+// External interrupts
+extern volatile uint8_t EIMSK;
+#define INT1    1
+#define INT0    0
+
+extern volatile uint8_t EICRA;
+#define ISC11   3
+#define ISC10   2
+#define ISC01   1
+#define ISC00   0

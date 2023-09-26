@@ -29,6 +29,9 @@ add_avr_test(TARGET test_analog_digital_converter
 add_avr_test(TARGET test_bit_op 
              SOURCE test_bit_op.cpp)
 
+add_avr_test(TARGET test_external_interrupt 
+             SOURCE test_external_interrupt.cpp)
+
 add_avr_test(TARGET test_port 
              SOURCE test_port.cpp)
 
