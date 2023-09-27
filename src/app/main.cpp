@@ -8,6 +8,7 @@
 
 #include <avr_cpp/analog_digital_converter.h>
 #include <avr_cpp/external_interrupt.h>
+#include <avr_cpp/pin_change_interrupt.h>
 #include <avr_cpp/port.h>
 #include <avr_cpp/usart0.h>
 
@@ -40,6 +41,8 @@ int main() {
 
     ExternalInterrupt::set(INT1, ExternalInterrupt::Sense::Change,
                            ExternalInterrupt::InterruptServiceRoutine::create<isr>());
+
+    PinChangeInterrupt::set(PCIE0, []{}, PD1);
 
     while (true) {
         if (pins.readInputPin(PD2)) {

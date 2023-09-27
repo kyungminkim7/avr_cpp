@@ -36,6 +36,24 @@ extern volatile uint8_t PORTB;
 #define PB1 1
 #define PB0 0
 
+#define PC7 7
+#define PC6 6
+#define PC5 5
+#define PC4 4
+#define PC3 3
+#define PC2 2
+#define PC1 1
+#define PC0 0
+
+#define PD7 7
+#define PD6 6
+#define PD5 5
+#define PD4 4
+#define PD3 3
+#define PD2 2
+#define PD1 1
+#define PD0 0
+
 // Baud rate
 extern volatile uint16_t UBRR0;
 
@@ -95,3 +113,13 @@ extern volatile uint8_t EICRA;
 #define ISC10   2
 #define ISC01   1
 #define ISC00   0
+
+// Pin change interrupts
+extern volatile uint8_t PCICR;
+#define PCIE2   2
+#define PCIE1   1
+#define PCIE0   0
+
+extern volatile uint8_t PCMSK0;
+extern volatile uint8_t PCMSK1;
+extern volatile uint8_t PCMSK2;

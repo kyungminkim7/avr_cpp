@@ -32,3 +32,9 @@ volatile uint8_t &ADCL = *(reinterpret_cast<volatile uint8_t *>(&ADC) +
 // External interrupts
 volatile uint8_t EIMSK = 0;
 volatile uint8_t EICRA = 0;
+
+// Pin change interrupts
+volatile uint8_t PCICR = 0;
+volatile uint8_t PCMSK0 = 0;
+volatile uint8_t PCMSK1 = 0;
+volatile uint8_t PCMSK2 = 0;
