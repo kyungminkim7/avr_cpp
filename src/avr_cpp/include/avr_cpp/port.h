@@ -37,6 +37,9 @@ public:
     template<typename... Pins>
     void setOutputPinsHigh(Pins... pins);
 
+    template<typename... Pins>
+    void toggleOutputPins(Pins... pins);
+
 private:
     volatile T &dataDirection;
     volatile T &inputPins;

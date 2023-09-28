@@ -63,4 +63,10 @@ void Port<T>::setOutputPinsHigh(Pins... pins) {
     setBits(outputPins, pins...);
 }
 
+template<typename T>
+template<typename... Pins>
+void Port<T>::toggleOutputPins(Pins... pins) {
+    toggleBits(outputPins, pins...);
+}
+
 } // namespace avr_cpp

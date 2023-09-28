@@ -3,6 +3,7 @@
 #include <gmock/gmock.h>
 
 #include <avr_cpp/bit.h>
+#include <avr_cpp/matchers.h>
 
 using namespace ::testing;
 using namespace avr_cpp;
@@ -145,6 +146,33 @@ TEST_F(UnsetBitsInRange, UnsetsInRangeBitsAndIgnoresOutOfRangeBits) {
         LOW_OUT_OF_RANGE_BIT);
 
     ASSERT_THAT(value, Eq(0b0110'1101));
+}
+
+TEST(ToggleBits, FlipsUnsetBit) {
+    uint8_t value = 0;
+
+    toggleBits(value, 2);
+
+    ASSERT_THAT(value, 0b0100);
+}
+
+TEST(ToggleBits, FlipsSetBit) {
+    uint8_t value = 0xFF;
+
+    toggleBits(value, 3);
+
+    ASSERT_THAT(value, 0b1111'0111);
+}
+
+TEST(ToggleBits, FlipsMultipleBits) {
+    uint8_t value = 0;
+    setBits(value, 1);
+    unsetBits(value, 7);
+
+    toggleBits(value, 1, 7);
+
+    ASSERT_THAT(value, BitsAreUnset(1));
+    ASSERT_THAT(value, BitsAreSet(7));
 }
 
 TEST(GetBit, ReturnsFalseForLowBitValue) {

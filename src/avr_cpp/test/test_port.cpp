@@ -193,6 +193,17 @@ TEST(SetOutputPins, SetsOutputPins) {
     ASSERT_THAT(PORTB, Eq(0x48));
 }
 
+TEST(ToggleOutputPins, FlipsOutputPins) {
+    Port<> port(DDRB, PINB, PORTB);
+    port.setOutputPinsHigh(PB2);
+    port.setOutputPinsLow(PB5);
+
+    port.toggleOutputPins(PB2, PB5);
+
+    ASSERT_THAT(PORTB, BitsAreUnset(PB2));
+    ASSERT_THAT(PORTB, BitsAreSet(PB5));
+}
+
 class EnableInputPinPullupResistors : public Test {
 public:
     EnableInputPinPullupResistors() : port(DDRB, PINB, PORTB) {

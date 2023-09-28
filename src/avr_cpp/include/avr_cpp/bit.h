@@ -29,6 +29,9 @@ void unsetBitsInRange(T &value, Bit bit);
 template<typename T, typename Bit, typename... Bits>
 void unsetBitsInRange(T &value, Bit bit, Bits... bits);
 
+template<typename T, typename... Bits>
+void toggleBits(T &value, Bits... bits);
+
 template<typename T>
 bool getBit(const T &value, unsigned int bit);
 

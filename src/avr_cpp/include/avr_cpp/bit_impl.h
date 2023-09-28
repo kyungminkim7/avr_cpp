@@ -54,6 +54,11 @@ void unsetBitsInRange(T &value, Bit bit, Bits... bits) {
     unsetBitsInRange(value, bits...);
 }
 
+template<typename T, typename... Bits>
+void toggleBits(T &value, Bits... bits) {
+    value ^= createBitMask<T>(bits...);
+}
+
 template<typename T>
 bool getBit(const T &value, unsigned int bit) {
     return value & createBitMask<T>(bit);
