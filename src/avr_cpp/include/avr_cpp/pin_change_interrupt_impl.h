@@ -1,7 +1,7 @@
 #include <avr/interrupt.h>
 #include <avr/io.h>
 
-#include "bit_op.h"
+#include "bit.h"
 
 namespace avr_cpp {
 

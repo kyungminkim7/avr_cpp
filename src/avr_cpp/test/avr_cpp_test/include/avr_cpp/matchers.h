@@ -3,7 +3,7 @@
 #include <ostream>
 #include <tuple>
 
-#include <avr_cpp/bit_op.h>
+#include <avr_cpp/bit.h>
 
 namespace avr_cpp {
 

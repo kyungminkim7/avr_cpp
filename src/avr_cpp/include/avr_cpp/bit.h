@@ -34,4 +34,4 @@ bool getBit(const T &value, unsigned int bit);
 
 } // namespace avr_cpp
 
-#include "bit_op_impl.h"
+#include "bit_impl.h"

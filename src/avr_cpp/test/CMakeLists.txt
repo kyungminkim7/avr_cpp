@@ -26,8 +26,8 @@ endfunction()
 add_avr_test(TARGET test_analog_digital_converter 
              SOURCE test_analog_digital_converter.cpp)
 
-add_avr_test(TARGET test_bit_op 
-             SOURCE test_bit_op.cpp)
+add_avr_test(TARGET test_bit
+             SOURCE test_bit.cpp)
 
 add_avr_test(TARGET test_external_interrupt 
              SOURCE test_external_interrupt.cpp)

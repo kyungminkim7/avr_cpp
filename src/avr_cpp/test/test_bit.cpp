@@ -2,7 +2,7 @@
 
 #include <gmock/gmock.h>
 
-#include <avr_cpp/bit_op.h>
+#include <avr_cpp/bit.h>
 
 using namespace ::testing;
 using namespace avr_cpp;

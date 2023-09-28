@@ -2,7 +2,7 @@
 
 #include <avr/io.h>
 
-#include <avr_cpp/bit_op.h>
+#include <avr_cpp/bit.h>
 #include <avr_cpp/matchers.h>
 #include <avr_cpp/usart0.h>
 
