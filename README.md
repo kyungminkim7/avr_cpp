@@ -1,5 +1,5 @@
 # avr_cpp
-This project provides utility libraries and a CMake project template for programming and cross-compiling for AVR microcontrollers.
+This project provides utility libraries and a CMake project template for programming and cross-compiling for AVR microcontrollers using modern C++(14).
 
 This has been tested on an Ubuntu 22.04.1 LTS host system cross-compiling for an Atmega168p target system.
 
@@ -17,7 +17,7 @@ This has been tested on an Ubuntu 22.04.1 LTS host system cross-compiling for an
 3. `cmake --build .`
 4. `ctest --stop-on-failure -VV`
 
-### Build and flash AVR (run from project root directory)
-1. Add a project subdirectory following the example shown in `src/app`
+### Build and flash an AVR app (run from project root directory)
+1. Add a project subdirectory following the examples shown in `src/examples`
 2. `cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain/avr-gcc.cmake`
 3. `cmake --build build/ -t <TARGET>`

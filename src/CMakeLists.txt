@@ -2,5 +2,5 @@
 add_subdirectory(avr_cpp)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
-    add_subdirectory(app)
+    add_subdirectory(examples)
 endif()

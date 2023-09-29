@@ -1,10 +1,10 @@
 include(AVR)
 
 AddExecutableAVR(
-    TARGET app
+    TARGET external_interrupt
     MCU "${MCU}"
     PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
-    SOURCES main.cpp
+    SOURCES external_interrupt.cpp
     INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
     LIBRARIES avr_cpp
 )
