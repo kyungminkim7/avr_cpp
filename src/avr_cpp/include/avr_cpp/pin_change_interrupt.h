@@ -1,14 +1,13 @@
 #pragma once
 
 #include <etl/array.h>
-#include <etl/delegate.h>
+
+#include "interrupt.h"
 
 namespace avr_cpp {
 
 class PinChangeInterrupt {
 public:
-    using InterruptServiceRoutine = etl::delegate<void()>;
-
     static etl::array<InterruptServiceRoutine, 3> interruptServiceRoutines;
 
     template<typename... Bits>

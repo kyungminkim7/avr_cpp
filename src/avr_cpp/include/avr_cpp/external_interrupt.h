@@ -1,11 +1,9 @@
 #pragma once
 
-#include <etl/delegate.h>
+#include "interrupt.h"
 
 namespace avr_cpp {
 namespace ExternalInterrupt {
-
-using InterruptServiceRoutine = etl::delegate<void()>;
 
 enum class Sense { Low, Change, FallingEdge, RisingEdge };
 

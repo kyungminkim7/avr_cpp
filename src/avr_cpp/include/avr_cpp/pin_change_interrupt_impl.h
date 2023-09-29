@@ -5,7 +5,7 @@
 
 namespace avr_cpp {
 
-etl::array<PinChangeInterrupt::InterruptServiceRoutine, 3> PinChangeInterrupt::interruptServiceRoutines;
+etl::array<InterruptServiceRoutine, 3> PinChangeInterrupt::interruptServiceRoutines;
 
 template<typename... Bits>
 void PinChangeInterrupt::set(unsigned int interrupt, 

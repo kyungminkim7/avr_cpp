@@ -10,7 +10,7 @@ namespace {
 
 using namespace avr_cpp;
 
-etl::array<ExternalInterrupt::InterruptServiceRoutine, 2> interruptServiceRoutines;
+etl::array<InterruptServiceRoutine, 2> interruptServiceRoutines;
 
 void setSenseControl(unsigned int interrupt, ExternalInterrupt::Sense sense) {
     static constexpr auto NUM_CONTROL_BITS_PER_INTERRUPT = 2;

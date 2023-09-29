@@ -6,12 +6,12 @@ to turn an led on and off while the main loop repeatedly flashes another
 led on and off.
 */
 
-#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
 
 #include <etl/delegate.h>
 
+#include <avr_cpp/interrupt.h>
 #include <avr_cpp/external_interrupt.h>
 #include <avr_cpp/port.h>
 
@@ -37,8 +37,8 @@ int main() {
 
     inputPins.enableInputPinPullupResistors(BUTTON);
     ExternalInterrupt::set(INT0, ExternalInterrupt::Sense::Change,
-                           ExternalInterrupt::InterruptServiceRoutine::create<onButtonEvent>());
-    sei();
+                           InterruptServiceRoutine::create<onButtonEvent>());
+    enableInterrupts();
 
     while (true) {
         leds.toggleOutputPins(FLASHING_LED);
