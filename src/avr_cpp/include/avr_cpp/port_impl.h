@@ -42,7 +42,7 @@ void Port<T>::enableInputPinPullupResistors(Pins... pins) {
 }
 
 template<typename T>
-bool Port<T>::readInputPin(unsigned int pin) {
+bool Port<T>::readInputPin(unsigned int pin) const {
     return getBit(inputPins, pin);
 }
 
@@ -67,6 +67,11 @@ template<typename T>
 template<typename... Pins>
 void Port<T>::toggleOutputPins(Pins... pins) {
     toggleBits(outputPins, pins...);
+}
+
+template<typename T>
+Port<T> makePort(volatile T &dataDirection, volatile T &inputPins, volatile T &outputPins) {
+    return Port<T>(dataDirection, inputPins, outputPins);
 }
 
 } // namespace avr_cpp

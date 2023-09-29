@@ -21,8 +21,8 @@ constexpr auto BUTTON = PD2;
 constexpr auto FLASHING_LED = PB0;
 constexpr auto LED = PB2;
 
-Port<> inputPins(DDRD, PIND, PORTD);
-Port<> leds(DDRB, PINB, PORTB);
+auto inputPins = makePort(DDRD, PIND, PORTD);
+auto leds = makePort(DDRB, PINB, PORTB);
 
 void onButtonEvent() {
     if (inputPins.readInputPin(BUTTON)) {

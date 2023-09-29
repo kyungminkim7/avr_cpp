@@ -19,7 +19,7 @@ constexpr uint8_t ALL_PINS_HIGH = ~0;
 TEST(PortCreation, DoesNotChangeDataDirectionValues) {
     DDRB = 0xA3;
 
-    Port<> port(DDRB, PINB, PORTB);
+    makePort(DDRB, PINB, PORTB);
 
     ASSERT_THAT(DDRB, Eq(0xA3));
 }
@@ -27,7 +27,7 @@ TEST(PortCreation, DoesNotChangeDataDirectionValues) {
 TEST(PortCreation, DoesNotChangeInputPinValues) {
     PINB = 0xF9;
 
-    Port<> port(DDRB, PINB, PORTB);
+    makePort(DDRB, PINB, PORTB);
 
     ASSERT_THAT(PINB, Eq(0xF9));
 }
@@ -35,7 +35,7 @@ TEST(PortCreation, DoesNotChangeInputPinValues) {
 TEST(PortCreation, DoesNotChangeOutputPinValues) {
     PORTB = 0xE2;
 
-    Port<> port(DDRB, PINB, PORTB);
+    makePort(DDRB, PINB, PORTB);
 
     ASSERT_THAT(PORTB, Eq(0xE2));
 }
@@ -48,7 +48,7 @@ public:
         DDRB = ALL_OUTPUT_PINS;
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(ConfigureInputPins, UnsetsOneDataDirectionBit) {
@@ -77,7 +77,7 @@ public:
         DDRB = ALL_INPUT_PINS;
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(ConfigureOutputPins, SetsOneDataDirectionBit) {
@@ -100,7 +100,7 @@ TEST_F(ConfigureOutputPins, SetsMultipleDataDirectionBitsOfAnyOrder) {
 
 TEST(ConfigurePins, SetsDataDirectionRegister) {
     DDRB = 0xA7;
-    Port<> port(DDRB, PINB, PORTB);
+    auto port = makePort(DDRB, PINB, PORTB);
 
     port.configurePins(0x35);
 
@@ -113,7 +113,7 @@ public:
         port.configurePins(ALL_INPUT_PINS);
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(ReadInputPin, ReturnsFalseUponReadingLowInput) {
@@ -135,7 +135,7 @@ public:
         PORTB = ALL_PINS_HIGH;
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(SetOutputPinsLow, unsetsOnePin) {
@@ -163,7 +163,7 @@ public:
         PORTB = ALL_PINS_LOW;
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(SetOutputPinsHigh, SetsOnePin) {
@@ -187,14 +187,14 @@ TEST_F(SetOutputPinsHigh, SetsMultiplePinsOfAnyOrder) {
 TEST(SetOutputPins, SetsOutputPins) {
     PORTB = 0x36;
 
-    Port<> port(DDRB, PINB, PORTB);
+    Port<uint8_t> port(DDRB, PINB, PORTB);
     port.setOutputPins(0x48);
 
     ASSERT_THAT(PORTB, Eq(0x48));
 }
 
 TEST(ToggleOutputPins, FlipsOutputPins) {
-    Port<> port(DDRB, PINB, PORTB);
+    Port<uint8_t> port(DDRB, PINB, PORTB);
     port.setOutputPinsHigh(PB2);
     port.setOutputPinsLow(PB5);
 
@@ -211,7 +211,7 @@ public:
         port.configurePins(ALL_INPUT_PINS);
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(EnableInputPinPullupResistors, SetsOneOutputPin) {
@@ -233,7 +233,7 @@ public:
         port.configurePins(ALL_INPUT_PINS);
     }
 
-    Port<> port;
+    Port<uint8_t> port;
 };
 
 TEST_F(DisableInputPinPullupResistors, UnsetsOneOutputPin) {
@@ -250,7 +250,7 @@ TEST_F(DisableInputPinPullupResistors, UnsetsMultipleOutputPins) {
 
 TEST(SetInputPinPullupResistors, SetOutputPins) {
     PINB = 0xB3;
-    Port<> port(DDRB, PINB, PORTB);
+    auto port = makePort(DDRB, PINB, PORTB);
     port.configurePins(ALL_INPUT_PINS);
 
     port.setInputPinPullupResistors(0x3C);

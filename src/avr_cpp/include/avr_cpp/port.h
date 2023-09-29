@@ -1,12 +1,8 @@
 #pragma once
 
-#include <stdint.h>
-
-#include "abstract.h"
-
 namespace avr_cpp {
 
-template<typename T = uint8_t>
+template<typename T>
 class Port {
 public:
     Port(volatile T &dataDirection, volatile T &inputPins, volatile T &outputPins);
@@ -27,7 +23,7 @@ public:
     template<typename... Pins>
     void enableInputPinPullupResistors(Pins... pins);
 
-    bool readInputPin(unsigned int pin);
+    bool readInputPin(unsigned int pin) const;
 
     void setOutputPins(T pinState);
 
@@ -45,6 +41,9 @@ private:
     volatile T &inputPins;
     volatile T &outputPins;
 };
+
+template<typename T>
+Port<T> makePort(volatile T &dataDirection, volatile T &inputPins, volatile T &outputPins);
 
 } // namespace avr_cpp
 
