@@ -26,3 +26,12 @@ AddExecutableAVR(
     INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
     LIBRARIES avr_cpp
 )
+
+AddExecutableAVR(
+    TARGET usart
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES usart.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
