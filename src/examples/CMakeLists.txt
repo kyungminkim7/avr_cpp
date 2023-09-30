@@ -17,3 +17,12 @@ AddExecutableAVR(
     INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
     LIBRARIES avr_cpp
 )
+
+AddExecutableAVR(
+    TARGET pin_change_interrupt
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES pin_change_interrupt.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
