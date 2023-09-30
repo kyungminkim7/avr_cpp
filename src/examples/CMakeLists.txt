@@ -1,10 +1,10 @@
 include(AVR)
 
 AddExecutableAVR(
-    TARGET adc_usart
+    TARGET analog_digital_converter
     MCU "${MCU}"
     PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
-    SOURCES adc_usart.cpp
+    SOURCES analog_digital_converter.cpp
     INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
     LIBRARIES avr_cpp
 )

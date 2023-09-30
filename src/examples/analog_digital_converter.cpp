@@ -24,15 +24,14 @@ int main() {
 
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AVCC,
                                AnalogDigitalConverter::ClockPrescaler::Eight,
-                               AnalogDigitalConverter::TriggerMode::Auto,
-                               AnalogDigitalConverter::AdjustResult::Left);
+                               AnalogDigitalConverter::TriggerMode::Auto);
     adc.startConversion();
 
-    etl::string<8> valueStr;
+    etl::string<8> result;
 
     while (true) {
-        etl::to_string(adc.getResultHighByte(), valueStr);
-        usart << "ADC: " << valueStr << ' ';
+        etl::to_string(adc.getResult(), result);
+        usart << "ADC: " << result << ' ';
 
         _delay_ms(50);
     }
