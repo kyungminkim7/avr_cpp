@@ -29,6 +29,9 @@ add_avr_test(TARGET test_analog_digital_converter
 add_avr_test(TARGET test_bit
              SOURCE test_bit.cpp)
 
+add_avr_test(TARGET test_chrono
+             SOURCE test_chrono.cpp)
+
 add_avr_test(TARGET test_external_interrupt 
              SOURCE test_external_interrupt.cpp)
 
@@ -37,6 +40,12 @@ add_avr_test(TARGET test_pin_change_interrupt
 
 add_avr_test(TARGET test_port 
              SOURCE test_port.cpp)
+
+add_avr_test(TARGET test_ratio 
+             SOURCE test_ratio.cpp)
+
+add_avr_test(TARGET test_type_traits 
+             SOURCE test_type_traits.cpp)
 
 add_avr_test(TARGET test_usart 
              SOURCE test_usart.cpp)
