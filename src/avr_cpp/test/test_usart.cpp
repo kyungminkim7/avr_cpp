@@ -3,8 +3,9 @@
 #include <avr/io.h>
 
 #include <avr_cpp/bit.h>
-#include <avr_cpp/matchers.h>
+#include <avr_cpp/chrono.h>
 #include <avr_cpp/usart0.h>
+#include <avr_cpp_test/matchers.h>
 
 using namespace ::testing;
 using namespace avr_cpp;
@@ -55,25 +56,21 @@ public:
     static constexpr auto NUM_STOP_BITS = Usart::NumStopBits::One;
 
     static constexpr auto BAUD_RATE = 9000ul;
-    static constexpr auto BAUD_TOLERANCE_PERCENT = 2u;
-    static constexpr auto SYSTEM_CLOCK_FREQ = 1'000'000ul;
 };
 
 TEST_F(UsartSetNormalSpeedBaudRate, setsUsartBaudRateRegister) {
     UBRR0 = 0;
 
-    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE, 
-                 BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
+    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_THAT(UBRR0, Eq((SYSTEM_CLOCK_FREQ + 8ul * BAUD_RATE) / 
+    ASSERT_THAT(UBRR0, Eq((Chrono::SystemClock::frequency + 8ul * BAUD_RATE) / 
                           (16ul * BAUD_RATE) - 1ul));
 }
 
 TEST_F(UsartSetNormalSpeedBaudRate, unsetsDoubleSpeedOperationBit) {
     UCSR0A = 0xFF;
 
-    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE, 
-                 BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
+    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
     ASSERT_THAT(UCSR0A, BitsAreUnset(U2X0));
 }
@@ -84,25 +81,21 @@ public:
     static constexpr auto NUM_STOP_BITS = Usart::NumStopBits::One;
 
     static constexpr auto BAUD_RATE = 9600ul;
-    static constexpr auto BAUD_TOLERANCE_PERCENT = 2u;
-    static constexpr auto SYSTEM_CLOCK_FREQ = 1'000'000ul;
 };
 
 TEST_F(UsartSetDoubleSpeedBaudRate, setsUsartBaudRateRegister) {
     UBRR0 = 0;
 
-    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE,
-                 BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
+    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
-    ASSERT_THAT(UBRR0, Eq((SYSTEM_CLOCK_FREQ + 4ul * BAUD_RATE) / 
+    ASSERT_THAT(UBRR0, Eq((Chrono::SystemClock::frequency + 4ul * BAUD_RATE) / 
                           (8ul * BAUD_RATE) - 1ul));
 }
 
 TEST_F(UsartSetDoubleSpeedBaudRate, setsDoubleSpeedOperationBit) {
     UCSR0A = 0;
 
-    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE,
-                 BAUD_TOLERANCE_PERCENT, SYSTEM_CLOCK_FREQ);
+    Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
     ASSERT_THAT(UCSR0A, BitsAreSet(U2X0));
 }

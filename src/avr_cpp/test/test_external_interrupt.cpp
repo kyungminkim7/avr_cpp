@@ -3,7 +3,7 @@
 #include <avr/io.h>
 
 #include <avr_cpp/external_interrupt.h>
-#include <avr_cpp/matchers.h>
+#include <avr_cpp_test/matchers.h>
 
 using namespace ::testing;
 using namespace avr_cpp;

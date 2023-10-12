@@ -59,8 +59,8 @@ namespace ExternalInterrupt {
 void set(unsigned int interrupt, Sense sense, 
          InterruptServiceRoutine interruptServiceRoutine) {
     setSenseControl(interrupt, sense);
-    enableInterrupt(interrupt);
     interruptServiceRoutines[interrupt] = interruptServiceRoutine;
+    enableInterrupt(interrupt);
 }
 
 } // namespace ExternalInterrupt

@@ -3,7 +3,6 @@
 #include <stdint.h>
 
 #include <etl/limits.h>
-#include <etl/ratio.h>
 #include <etl/type_traits.h>
 
 #include "ratio.h"
@@ -11,7 +10,12 @@
 namespace avr_cpp {
 namespace Chrono {
 
-template<typename Rep, typename Period = etl::ratio<1>>
+class SystemClock {
+public:
+    static constexpr auto frequency = F_CPU;
+};
+
+template<typename Rep, typename Period = Ratio<1>>
 struct Duration;
 
 // common_type specializations
@@ -25,8 +29,8 @@ struct DurationCommonType<Rep, Period1, Period2,
 private:
     using gcdNum = GreatestCommonDivisor<Period1::num, Period2::num>;
     using gcdDen = GreatestCommonDivisor<Period1::den, Period2::den>;
-    using period = etl::ratio<gcdNum::value,
-                              (Period1::den / gcdDen::value) * Period2::den>;
+    using period = Ratio<gcdNum::value,
+                         (Period1::den / gcdDen::value) * Period2::den>;
 
 public:
     using type = Duration<typename Rep::type, period>;
@@ -84,11 +88,11 @@ struct Duration {
 
 public:
 	using rep = Rep;
-	using period = Reduce<Period>;
+	using period = typename Period::type;
 
     template<typename Period2>
     using isHarmonic = etl::bool_constant<
-        Divide<Reduce<Period2>, period>::den == 1>;
+        Divide<Period2, period>::den == 1>;
 
 	constexpr Duration() = default;
 	Duration(const Duration&) = default;
@@ -262,24 +266,16 @@ template<typename Rep1, typename Period1,
 constexpr bool operator>=(const Duration<Rep1, Period1> &lhs, 
                           const Duration<Rep2, Period2> &rhs);
 
-#if (INT_MAX >= INT32_MAX)
-using Nanoseconds = Duration<intmax_t, etl::nano>;
-using Microseconds = Duration<intmax_t, etl::micro>;
-#endif
-
-#if (INT_MAX >= INT16_MAX)
-using Milliseconds = Duration<intmax_t, etl::milli>;
+using Microseconds = Duration<intmax_t, Micro>;
+using Milliseconds = Duration<intmax_t, Milli>;
 using Seconds = Duration<intmax_t>;
-using Minutes = Duration<intmax_t, etl::ratio<60>>;
-using Hours = Duration<intmax_t, etl::ratio<3600>>;
-#endif
+using Minutes = Duration<intmax_t, Ratio<60>>;
+using Hours = Duration<intmax_t, Ratio<3600>>;
 
-#if (INT_MAX >= INT32_MAX)
-using Days = Duration<intmax_t, etl::ratio<86400>>;
-using Weeks = Duration<intmax_t, etl::ratio<604800>>;
-using Months = Duration<intmax_t, etl::ratio<2629746>>;
-using Years = Duration<intmax_t, etl::ratio<31556952>>;
-#endif
+using Days = Duration<intmax_t, Ratio<86400>>;
+using Weeks = Duration<intmax_t, Ratio<604800>>;
+using Months = Duration<intmax_t, Ratio<2629746>>;
+using Years = Duration<intmax_t, Ratio<31556952>>;
 
 } // namespace Chrono
 } // namespace avr_cpp

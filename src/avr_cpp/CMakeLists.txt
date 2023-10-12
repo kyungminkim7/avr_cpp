@@ -6,6 +6,7 @@ add_library(avr_cpp
     external_interrupt.cpp
     interrupt.cpp
     memory.cpp
+    timer.cpp
 )
 
 # Generate USART source/header files

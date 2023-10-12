@@ -44,6 +44,9 @@ add_avr_test(TARGET test_port
 add_avr_test(TARGET test_ratio 
              SOURCE test_ratio.cpp)
 
+add_avr_test(TARGET test_timer
+             SOURCE test_timer.cpp)
+
 add_avr_test(TARGET test_type_traits 
              SOURCE test_type_traits.cpp)
 

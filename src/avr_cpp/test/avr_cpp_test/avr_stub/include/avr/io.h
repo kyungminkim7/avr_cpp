@@ -123,3 +123,32 @@ extern volatile uint8_t PCICR;
 extern volatile uint8_t PCMSK0;
 extern volatile uint8_t PCMSK1;
 extern volatile uint8_t PCMSK2;
+
+// Timers
+extern volatile uint16_t OCR1A;
+extern volatile uint16_t OCR1B;
+
+extern volatile uint8_t TIMSK1;
+#define ICIE1   5
+#define OCIE1B  2
+#define OCIE1A  1
+#define TOIE1   0
+
+extern volatile uint16_t TCNT1;
+
+extern volatile uint8_t TCCR1A;
+#define COM1A1  7
+#define COM1A0  6
+#define COM1B1  5
+#define COM1B0  4
+#define WGM11   1
+#define WGM10   0
+
+extern volatile uint8_t TCCR1B;
+#define ICNC1   7
+#define ICES1   6
+#define WGM13   4
+#define WGM12   3
+#define CS12    2
+#define CS11    1
+#define CS10    0

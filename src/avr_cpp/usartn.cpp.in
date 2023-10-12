@@ -3,6 +3,7 @@
 #include <avr/io.h>
 
 #include <avr_cpp/bit.h>
+#include <avr_cpp/chrono.h>
 
 namespace {
 
@@ -24,20 +25,17 @@ void disableReceiver() {
     unsetBits(UCSR${n}B, RXEN${n});
 }
 
-unsigned long calculateNormalSpeedBaudRateRegister(unsigned long baudRate, 
-                                                   unsigned long systemClockFreq) {
-    return (systemClockFreq + 8ul * baudRate) / (16ul * baudRate) - 1ul;
+unsigned long calculateNormalSpeedBaudRateRegister(unsigned long baudRate) {
+    return (Chrono::SystemClock::frequency + 8ul * baudRate) / (16ul * baudRate) - 1ul;
 }
 
-unsigned long calculateDoubleSpeedBaudRateRegister(unsigned long baudRate, 
-                                                   unsigned long systemClockFreq) {
-    return (systemClockFreq + 4ul * baudRate) / (8ul * baudRate) - 1ul;
+unsigned long calculateDoubleSpeedBaudRateRegister(unsigned long baudRate) {
+    return (Chrono::SystemClock::frequency + 4ul * baudRate) / (8ul * baudRate) - 1ul;
 }
 
 template<typename T>
 bool requiresDoubleSpeedOperation(unsigned long baudRate, 
                                   unsigned int baudTolerancePercent, 
-                                  unsigned long systemClockFreq,
                                   T baudRateRegisterValue) {
     constexpr static auto PERCENT_MULTIPLIER = 100ul;
 
@@ -49,10 +47,8 @@ bool requiresDoubleSpeedOperation(unsigned long baudRate,
     const auto maxBaudRate = baudRateClock * 
         (PERCENT_MULTIPLIER + baudTolerancePercent);
 
-    systemClockFreq *= PERCENT_MULTIPLIER;
-
-    return systemClockFreq < minBaudRate ||
-        systemClockFreq > maxBaudRate;
+    return Chrono::SystemClock::frequency * PERCENT_MULTIPLIER < minBaudRate ||
+        Chrono::SystemClock::frequency * PERCENT_MULTIPLIER > maxBaudRate;
 }
 
 void setNormalSpeedOperations() {
@@ -63,13 +59,11 @@ void setDoubleSpeedOperations() {
     setBits(UCSR${n}A, U2X${n});
 }
 
-void setBaudRate(unsigned long baudRate, unsigned int baudTolerancePercent,
-                 unsigned long systemClockFreq) {
-    UBRR${n} = calculateNormalSpeedBaudRateRegister(baudRate, systemClockFreq);
+void setBaudRate(unsigned long baudRate, unsigned int baudTolerancePercent) {
+    UBRR${n} = calculateNormalSpeedBaudRateRegister(baudRate);
 
-    if (requiresDoubleSpeedOperation(baudRate, baudTolerancePercent, 
-                                     systemClockFreq, UBRR${n})) {
-        UBRR${n} = calculateDoubleSpeedBaudRateRegister(baudRate, systemClockFreq);
+    if (requiresDoubleSpeedOperation(baudRate, baudTolerancePercent, UBRR${n})) {
+        UBRR${n} = calculateDoubleSpeedBaudRateRegister(baudRate);
         setDoubleSpeedOperations();
     } else {
         setNormalSpeedOperations();
@@ -131,14 +125,13 @@ void setNumStopBits(Usart::NumStopBits numStopBits) {
 namespace avr_cpp {
 
 Usart${n}::Usart${n}(Usart::DataSize dataSize, Usart::NumStopBits numStopBits, 
-                     unsigned long baudRate, unsigned int baudTolerancePercent,
-                     unsigned long systemClockFreq) {
+                     unsigned long baudRate, unsigned int baudTolerancePercent) {
     enableTransmitter();
     enableReceiver();
 
     setDataSize(dataSize);
     setNumStopBits(numStopBits);
-    setBaudRate(baudRate, baudTolerancePercent, systemClockFreq);
+    setBaudRate(baudRate, baudTolerancePercent);
 }
 
 Usart${n}::~Usart${n}() {

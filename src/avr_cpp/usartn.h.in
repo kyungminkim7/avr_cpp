@@ -11,9 +11,7 @@ namespace avr_cpp {
 class Usart${n} {
 public:
     Usart${n}(Usart::DataSize dataSize, Usart::NumStopBits numStopBits, 
-              unsigned long baudRate,
-              unsigned int baudTolerancePercent = Usart::DEFAULT_BAUD_TOLERANCE_PERCENT,
-              unsigned long systemClockFreq = Usart::DEFAULT_SYSTEM_CLOCK_FREQ);
+              unsigned long baudRate, unsigned int baudTolerancePercent = 2u);
     ~Usart${n}();
 };
 

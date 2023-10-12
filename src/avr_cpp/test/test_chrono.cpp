@@ -1,31 +1,15 @@
 #include <limits>
 #include <numeric>
-#include <ostream>
 #include <type_traits>
 
-#include <etl/ratio.h>
 #include <gmock/gmock.h>
 
 #include <avr_cpp/chrono.h>
+#include <avr_cpp_test/chrono.h>
 
 using namespace ::testing;
+using namespace avr_cpp;
 using namespace avr_cpp::Chrono;
-
-namespace avr_cpp {
-namespace Chrono {
-
-template<typename Rep, typename Period>
-std::ostream &operator<<(std::ostream &os, const Duration<Rep, Period> &d) {
-    using Dur = Duration<Rep, Period>;
-    os << "Duration<" 
-        << typeid(typename Dur::rep).name() << ", " 
-        << "ratio<" << Dur::period::num << ", " << Dur::period::den << ">>"
-        << '(' << d.count() << ')';
-    return os;
-}
-
-} // namespace Chrono
-} // namespace avr_cpp
 
 TEST(TestDuration, RepType) {
     const auto result = std::is_same_v<typename Duration<float>::rep, 
@@ -34,13 +18,13 @@ TEST(TestDuration, RepType) {
 }
 
 TEST(TestDuration, PeriodType) {
-    const auto result = std::is_same_v<typename Duration<int, etl::milli>::period, 
-                                       etl::milli>;
+    const auto result = std::is_same_v<typename Duration<int, Milli>::period, 
+                                       Milli>;
     ASSERT_TRUE(result);
 }
 
 TEST(TestDuration, ReducesPeriod) {
-    using period = Duration<int, etl::ratio<25, 30>>::period;
+    using period = Duration<int, Ratio<25, 30>>::period;
     constexpr auto gcd = std::gcd(25, 30);
 
     ASSERT_THAT(period::num, Eq(25 / gcd));
@@ -72,16 +56,16 @@ TEST(TestIsDuration, True) {
 }
 
 TEST(TestIsHarmonic, ReturnsFalseTypeForNonExactMultiples) {
-    const auto result = Duration<int, etl::ratio<3, 5>>
-        ::isHarmonic<etl::ratio<3, 5 * 2>>
+    const auto result = Duration<int, Ratio<3, 5>>
+        ::isHarmonic<Ratio<3, 5 * 2>>
         ::value;
 
     ASSERT_FALSE(result);
 }
 
 TEST(TestIsHarmonic, ReturnsTrueTypeForExactMultiples) {
-    const auto result = Duration<int, etl::ratio<3, 5>>
-        ::isHarmonic<etl::ratio<3 * 7, 5>>
+    const auto result = Duration<int, Ratio<3, 5>>
+        ::isHarmonic<Ratio<3 * 7, 5>>
         ::value;
     ASSERT_TRUE(result);
 }
@@ -95,8 +79,8 @@ TEST(TestDurationCommonType, ReturnsCommonRepType) {
 }
 
 TEST(TestDurationCommonType, ReturnsCommonPeriodType) {
-    using commonDuration = etl::common_type_t<Duration<int, etl::ratio<8, 9>>, 
-                                              Duration<int, etl::ratio<14, 27>>>;
+    using commonDuration = etl::common_type_t<Duration<int, Ratio<8, 9>>, 
+                                              Duration<int, Ratio<14, 27>>>;
 
     ASSERT_THAT(commonDuration::period::num, Eq(2));
     ASSERT_THAT(commonDuration::period::den, Eq(27));
@@ -114,7 +98,7 @@ TEST(DurationCast, CastsRepType) {
 
 TEST(DurationCast, CastsPeriodType) {
     using FromDuration = Duration<int>;
-    using ToDuration = Duration<int, etl::milli>;
+    using ToDuration = Duration<int, Milli>;
 
     constexpr auto duration = durationCast<ToDuration>(FromDuration());
 

@@ -9,8 +9,6 @@ led on and off.
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include <etl/delegate.h>
-
 #include <avr_cpp/interrupt.h>
 #include <avr_cpp/external_interrupt.h>
 #include <avr_cpp/port.h>

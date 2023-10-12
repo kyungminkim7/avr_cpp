@@ -11,8 +11,8 @@ template<typename... Bits>
 void PinChangeInterrupt::set(unsigned int interrupt, 
                              InterruptServiceRoutine interruptServiceRoutine, 
                              Bits... bits) {
-    enableInterrupt(interrupt);
     interruptServiceRoutines[interrupt] = interruptServiceRoutine;
+    enableInterrupt(interrupt);
     setBitMask(interrupt, bits...);
 }
 

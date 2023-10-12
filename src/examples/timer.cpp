@@ -1,31 +1,41 @@
+/*
+This program is an example of using a hardware timer to periodically
+call an interrupt service routine.
+*/
+#include <avr/io.h>
 #include <util/delay.h>
 
-#include <etl/string.h>
-#include <etl/to_string.h>
-
 #include <avr_cpp/chrono.h>
+#include <avr_cpp/interrupt.h>
+#include <avr_cpp/port.h>
+#include <avr_cpp/timer.h>
 #include <avr_cpp/usart0.h>
 
 using namespace avr_cpp;
 
 constexpr auto BAUD_RATE = 9600;
+Usart0 usart(Usart::DataSize::EightBits,
+             Usart::NumStopBits::One, 
+             BAUD_RATE);
+
+void sendMessage() {
+    usart << "Timer message ";
+}
 
 int main() {
-    Usart0 usart(Usart::DataSize::EightBits,
-                 Usart::NumStopBits::One, 
-                 BAUD_RATE);
+    auto leds = makePort(DDRB, PINB, PORTB);
+    leds.configureOutputPins(PB0);
 
-    Chrono::Seconds d1(4);
-    Chrono::Minutes d2(2);
-
-    etl::string<8> str;
+    using HiResTimer = HighResolutionTimer64;
+    HiResTimer timer(Chrono::durationCast<HiResTimer::duration>(Chrono::Milliseconds(500)),
+                     InterruptServiceRoutine::create<sendMessage>(),
+                     Timer::Mode::Repeat);
+    enableInterrupts();
+    timer.start();
 
     while (true) {
-        d1 += d2;
-        etl::to_string(d1.count(), str);
-        usart << str << ' ';
-
-        _delay_ms(1000);
+        leds.toggleOutputPins(PB0);
+        _delay_ms(1500);
     }
 
     return 0;

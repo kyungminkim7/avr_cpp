@@ -10,6 +10,15 @@ AddExecutableAVR(
 )
 
 AddExecutableAVR(
+    TARGET elapsed_time
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES elapsed_time.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
+
+AddExecutableAVR(
     TARGET external_interrupt
     MCU "${MCU}"
     PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"

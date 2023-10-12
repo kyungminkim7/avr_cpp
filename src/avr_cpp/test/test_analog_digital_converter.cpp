@@ -4,7 +4,7 @@
 
 #include <avr_cpp/analog_digital_converter.h>
 #include <avr_cpp/bit.h>
-#include <avr_cpp/matchers.h>
+#include <avr_cpp_test/matchers.h>
 
 using namespace ::testing;
 using namespace avr_cpp;
