@@ -11,7 +11,7 @@ An ADC value is continuously read and sent serially over USART.
 #include <etl/to_string.h>
 
 #include <avr_cpp/analog_digital_converter.h>
-#include <avr_cpp/usart0.h>
+#include <avr_cpp/usart.h>
 
 using namespace avr_cpp;
 

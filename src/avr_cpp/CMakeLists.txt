@@ -13,9 +13,11 @@ add_library(avr_cpp
 MATH(EXPR USART_END "${NUM_USART_MODULES}-1")
 foreach(n RANGE ${USART_END})
     configure_file(usartn.h.in "include/avr_cpp/usart${n}.h")
-    configure_file(usartn.cpp.in "${CMAKE_CURRENT_BINARY_DIR}/usart${n}.cpp")
+    configure_file(usartn.cpp.in "usart${n}.cpp")
     target_sources(avr_cpp PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/usart${n}.cpp")
+    string(APPEND include_usart_n_headers "\n#include \"usart${n}.h\"")
 endforeach()
+configure_file(usart.h.in "include/avr_cpp/usart.h")
 
 target_include_directories(avr_cpp PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"

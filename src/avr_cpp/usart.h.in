@@ -1,0 +1,2 @@
+#pragma once
+${include_usart_n_headers}

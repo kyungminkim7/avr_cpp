@@ -9,7 +9,7 @@ call an interrupt service routine.
 #include <avr_cpp/interrupt.h>
 #include <avr_cpp/port.h>
 #include <avr_cpp/timer.h>
-#include <avr_cpp/usart0.h>
+#include <avr_cpp/usart.h>
 
 using namespace avr_cpp;
 

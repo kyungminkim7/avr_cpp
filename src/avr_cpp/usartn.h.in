@@ -4,7 +4,7 @@
 
 #include <etl/string_view.h>
 
-#include <avr_cpp/usart.h>
+#include <avr_cpp/usart_common.h>
 
 namespace avr_cpp {
 

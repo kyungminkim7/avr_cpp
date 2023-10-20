@@ -9,7 +9,7 @@ This program is an example of using a timer to repeatedly get the elapsed time.
 
 #include <avr_cpp/chrono.h>
 #include <avr_cpp/timer.h>
-#include <avr_cpp/usart0.h>
+#include <avr_cpp/usart.h>
 
 using namespace avr_cpp;
 

@@ -4,7 +4,7 @@
 
 #include <avr_cpp/bit.h>
 #include <avr_cpp/chrono.h>
-#include <avr_cpp/usart0.h>
+#include <avr_cpp/usart.h>
 #include <avr_cpp_test/matchers.h>
 
 using namespace ::testing;

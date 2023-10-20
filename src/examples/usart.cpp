@@ -4,7 +4,7 @@ This program is an example of using USART to send and receive serial data.
 
 #include <stdint.h>
 
-#include <avr_cpp/usart0.h>
+#include <avr_cpp/usart.h>
 
 using namespace avr_cpp;
 
