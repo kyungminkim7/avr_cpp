@@ -1,0 +1,33 @@
+#pragma once
+
+#include <stdint.h>
+
+#include <avr_cpp/pulse_width_modulation_common.h>
+
+namespace avr_cpp {
+
+template<unsigned int PRESCALER>
+class PulseWidthModulation${n} {
+public:
+    explicit PulseWidthModulation${n}(PulseWidthModulation::Channel channels);
+    ~PulseWidthModulation${n}();
+
+    void set(uint8_t dutyCycle);
+    void set(uint8_t dutyCycle, PulseWidthModulation::Channel channels);
+
+    void start();
+    void stop();
+
+private:
+    PulseWidthModulation::Channel channels;
+};
+
+using PulseWidthModulation${n}_1 = PulseWidthModulation${n}<1>;
+using PulseWidthModulation${n}_8 = PulseWidthModulation${n}<8>;
+using PulseWidthModulation${n}_32 = PulseWidthModulation${n}<32>;
+using PulseWidthModulation${n}_64 = PulseWidthModulation${n}<64>;
+using PulseWidthModulation${n}_128 = PulseWidthModulation${n}<128>;
+using PulseWidthModulation${n}_256 = PulseWidthModulation${n}<256>;
+using PulseWidthModulation${n}_1024 = PulseWidthModulation${n}<1024>;
+
+} // namespace avr_cpp

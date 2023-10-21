@@ -23,4 +23,18 @@ template<intmax_t N>
 struct GreatestCommonDivisor<0, N> 
     : etl::integral_constant<intmax_t, AbsoluteValue<N>::value> { };
 
+template<typename T, bool = etl::is_enum<T>::value>
+struct UnderlyingTypeImpl {
+    using type = __underlying_type(T);
+};
+
+template<typename T>
+struct UnderlyingTypeImpl<T, false> { };
+
+template<typename T>
+struct UnderlyingTypeT : public UnderlyingTypeImpl<T> {};
+
+template<typename T>
+using UnderlyingType = typename UnderlyingTypeT<T>::type;
+
 } // namespace avr_cpp

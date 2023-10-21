@@ -19,6 +19,20 @@ foreach(n RANGE ${USART_END})
 endforeach()
 configure_file(usart.h.in "include/avr_cpp/usart.h")
 
+# Generate timer & pulse width modulation source/header files
+foreach(n ${TIMER_MODULES})
+    configure_file(pulse_width_modulationn.h.in 
+                   "include/avr_cpp/pulse_width_modulation${n}.h")
+    configure_file(pulse_width_modulationn.cpp.in 
+                   "pulse_width_modulation${n}.cpp")
+    target_sources(avr_cpp PRIVATE 
+                   "${CMAKE_CURRENT_BINARY_DIR}/pulse_width_modulation${n}.cpp")
+    string(APPEND include_pulse_width_modulation_n_headers 
+                  "\n#include \"pulse_width_modulation${n}.h\"")
+endforeach()
+configure_file(pulse_width_modulation.h.in 
+               "include/avr_cpp/pulse_width_modulation.h")
+
 target_include_directories(avr_cpp PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"

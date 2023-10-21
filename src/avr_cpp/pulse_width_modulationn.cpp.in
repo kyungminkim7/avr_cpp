@@ -1,0 +1,125 @@
+#include <avr_cpp/pulse_width_modulation${n}.h>
+
+#include <avr/io.h>
+
+#include <avr_cpp/bit.h>
+
+namespace {
+
+using namespace avr_cpp;
+
+void setFastPulseWidthModulationMode() {
+    setBits(TCCR${n}A, WGM${n}1, WGM${n}0);
+    unsetBits(TCCR${n}B, WGM${n}2);
+}
+
+void setNonInvertingCompareOutputMode(PulseWidthModulation::Channel channels) {
+    if ((channels & PulseWidthModulation::Channel::A) == PulseWidthModulation::Channel::A) {
+        unsetBits(TCCR${n}A, COM${n}A0);
+        setBits(TCCR${n}A, COM${n}A1);
+    }
+
+    if ((channels & PulseWidthModulation::Channel::B) == PulseWidthModulation::Channel::B) {
+        unsetBits(TCCR${n}A, COM${n}B0);
+        setBits(TCCR${n}A, COM${n}B1);
+    }
+}
+
+void setDutyCycle(uint8_t dutyCycle, PulseWidthModulation::Channel channels) {
+    if ((channels & PulseWidthModulation::Channel::A) == PulseWidthModulation::Channel::A) {
+        OCR${n}A = dutyCycle;
+    }
+
+    if ((channels & PulseWidthModulation::Channel::B) == PulseWidthModulation::Channel::B) {
+        OCR${n}B = dutyCycle;
+    }
+}
+
+void disconnectOutputComparePins() {
+    unsetBits(TCCR${n}A, COM${n}A1, COM${n}A0, COM${n}B1, COM${n}B0);
+}
+
+} // namespace
+
+namespace avr_cpp {
+
+template<unsigned int PRESCALER>
+PulseWidthModulation${n}<PRESCALER>::PulseWidthModulation${n}(PulseWidthModulation::Channel channels) : 
+    channels(channels) {
+    setFastPulseWidthModulationMode();
+    setNonInvertingCompareOutputMode(channels);
+}
+
+template<unsigned int PRESCALER>
+PulseWidthModulation${n}<PRESCALER>::~PulseWidthModulation${n}() {
+    stop();
+    disconnectOutputComparePins();
+}
+
+template<unsigned int PRESCALER>
+void PulseWidthModulation${n}<PRESCALER>::set(uint8_t dutyCycle) {
+    setDutyCycle(dutyCycle, channels);
+}
+
+template<unsigned int PRESCALER>
+void PulseWidthModulation${n}<PRESCALER>::set(uint8_t dutyCycle, 
+                                              PulseWidthModulation::Channel channels) {
+    setDutyCycle(dutyCycle, channels);
+}
+
+template<unsigned int PRESCALER>
+void PulseWidthModulation${n}<PRESCALER>::start() {
+    switch (PRESCALER) {
+    case 1:
+        setBits(TCCR${n}B, CS${n}0);
+        unsetBits(TCCR${n}B, CS${n}2, CS${n}1);
+        break;
+
+    case 8:
+        setBits(TCCR${n}B, CS${n}1);
+        unsetBits(TCCR${n}B, CS${n}2, CS${n}0);
+        break;
+
+    case 32:
+        setBits(TCCR${n}B, CS${n}1, CS${n}0);
+        unsetBits(TCCR${n}B, CS${n}2);
+        break;
+
+    case 64:
+        setBits(TCCR${n}B, CS${n}2);
+        unsetBits(TCCR${n}B, CS${n}1, CS${n}0);
+        break;
+
+    case 128:
+        setBits(TCCR${n}B, CS${n}2, CS${n}0);
+        unsetBits(TCCR${n}B, CS${n}1);
+        break;
+
+    case 256:
+        setBits(TCCR${n}B, CS${n}2, CS${n}1);
+        unsetBits(TCCR${n}B, CS${n}0);
+        break;
+
+    case 1024:
+        setBits(TCCR${n}B, CS${n}2, CS${n}1, CS${n}0);
+        break;
+    
+    default:
+        break;
+    }
+}
+
+template<unsigned int PRESCALER>
+void PulseWidthModulation${n}<PRESCALER>::stop() {
+    unsetBits(TCCR${n}B, CS${n}2, CS${n}1, CS${n}0);
+}
+
+template class PulseWidthModulation${n}<1>;
+template class PulseWidthModulation${n}<8>;
+template class PulseWidthModulation${n}<32>;
+template class PulseWidthModulation${n}<64>;
+template class PulseWidthModulation${n}<128>;
+template class PulseWidthModulation${n}<256>;
+template class PulseWidthModulation${n}<1024>;
+
+} // namespace avr_cpp

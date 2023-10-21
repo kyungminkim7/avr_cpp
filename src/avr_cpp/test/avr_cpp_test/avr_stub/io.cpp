@@ -40,9 +40,19 @@ volatile uint8_t PCMSK1 = 0;
 volatile uint8_t PCMSK2 = 0;
 
 // Timers
+volatile uint8_t OCR0A = 0;
+volatile uint8_t OCR0B = 0;
+volatile uint8_t TCCR0A = 0;
+volatile uint8_t TCCR0B = 0;
+
 volatile uint16_t OCR1A = 0;
 volatile uint16_t OCR1B = 0;
 volatile uint8_t TIMSK1 = 0;
 volatile uint16_t TCNT1 = 0;
 volatile uint8_t TCCR1A = 0;
 volatile uint8_t TCCR1B = 0;
+
+volatile uint8_t OCR2A = 0;
+volatile uint8_t OCR2B = 0;
+volatile uint8_t TCCR2A = 0;
+volatile uint8_t TCCR2B = 0;

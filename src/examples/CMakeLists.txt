@@ -37,6 +37,15 @@ AddExecutableAVR(
 )
 
 AddExecutableAVR(
+    TARGET pulse_width_modulation
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES pulse_width_modulation.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
+
+AddExecutableAVR(
     TARGET timer
     MCU "${MCU}"
     PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"

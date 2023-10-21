@@ -25,3 +25,13 @@ TEST(TestGreatestCommonDivisor, ReturnsGCD) {
     const auto result = GreatestCommonDivisor<30, 20>::value;
     ASSERT_THAT(result, Eq(10));
 }
+
+enum class ScopedEnumUint8 : uint8_t {};
+
+TEST(TestUnderlyingType, ReturnsScopedEnumUnderlyingType) {
+    const auto result = std::is_same_v<
+        uint8_t, 
+        UnderlyingType<ScopedEnumUint8>
+    >;
+    ASSERT_TRUE(result);
+}

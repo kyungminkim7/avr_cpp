@@ -41,6 +41,9 @@ add_avr_test(TARGET test_pin_change_interrupt
 add_avr_test(TARGET test_port 
              SOURCE test_port.cpp)
 
+add_avr_test(TARGET test_pulse_width_modulation 
+             SOURCE test_pulse_width_modulation.cpp)
+
 add_avr_test(TARGET test_ratio 
              SOURCE test_ratio.cpp)
 
