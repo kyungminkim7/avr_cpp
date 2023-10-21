@@ -46,8 +46,6 @@ HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period,
     setClearTimerOnCompareMatchWaveformGenerationMode();
     setPeriod(period, mode);
 
-    disconnectOutputComparePins(mode);
-
     setOutputCompareInterruptServiceRoutine(interruptServiceRoutine, mode);
     enableOutputCompareInterrupt(mode);
 }
@@ -55,6 +53,7 @@ HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period,
 template<unsigned int PRESCALER>
 HighResolutionTimer<PRESCALER>::~HighResolutionTimer() {
     stop();
+    disconnectOutputComparePins();
     disableTimerInterrupts();
 }
 
@@ -114,16 +113,8 @@ void HighResolutionTimer<PRESCALER>::setPinMode(Timer::PinMode pinMode,
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::disconnectOutputComparePins(Timer::Mode mode) {
-    switch (mode) {
-    case Timer::Mode::Repeat:
-        unsetBits(TCCR1A, COM1A1, COM1A0);
-        break;
-
-    case Timer::Mode::SingleShot:
-        unsetBits(TCCR1A, COM1B1, COM1B0);
-        break;
-    }
+void HighResolutionTimer<PRESCALER>::disconnectOutputComparePins() {
+    unsetBits(TCCR1A, COM1A1, COM1A0, COM1B1, COM1B0);
 }
 
 template<unsigned int PRESCALER>

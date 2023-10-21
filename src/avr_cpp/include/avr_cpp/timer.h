@@ -48,7 +48,7 @@ private:
     static void disableTimerInterrupts();
     static void setPeriod(const duration &period, Timer::Mode mode);
     static void setPinMode(Timer::PinMode pinMode, Timer::Mode mode);
-    static void disconnectOutputComparePins(Timer::Mode mode);
+    static void disconnectOutputComparePins();
     static void enableOutputCompareInterrupt(Timer::Mode mode);
     static void setOutputCompareInterruptServiceRoutine(InterruptServiceRoutine interruptServiceRoutine, 
                                                         Timer::Mode mode);
