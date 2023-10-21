@@ -19,5 +19,6 @@ This has been tested on an Ubuntu 22.04.1 LTS host system cross-compiling for an
 
 ### Build and flash an AVR app (run from project root directory)
 1. Add a project subdirectory following the examples shown in `src/examples`
-2. `cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain/avr-gcc.cmake -DCMAKE_BUILD_TYPE=RELEASE`
-3. `cmake --build build/ -t <TARGET>`
+2. Update root `CMakeLists.txt` cache variables to reflect AVR chip properties/project settings
+3. `cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain/avr-gcc.cmake -DCMAKE_BUILD_TYPE=RELEASE`
+4. `cmake --build build/ -t <TARGET>`
