@@ -26,10 +26,9 @@ int main() {
     auto leds = makePort(DDRB, PINB, PORTB);
     leds.configureOutputPins(PB0);
 
-    using HiResTimer = HighResolutionTimer64;
-    HiResTimer timer(Chrono::durationCast<HiResTimer::duration>(Chrono::Milliseconds(500)),
-                     InterruptServiceRoutine::create<sendMessage>(),
-                     Timer::Mode::Repeat);
+    HighResolutionTimer1_64 timer(Chrono::Milliseconds(500),
+                                  InterruptServiceRoutine::create<sendMessage>(),
+                                  Timer::Mode::Repeat);
     enableInterrupts();
     timer.start();
 

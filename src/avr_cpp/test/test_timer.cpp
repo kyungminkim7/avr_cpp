@@ -19,7 +19,7 @@ public:
 };
 
 TEST_F(StartSetsHighResolutionTimerPrescaler, One) {
-    HighResolutionTimer1 timer;
+    HighResolutionTimer1_1 timer;
     timer.start();
 
     ASSERT_THAT(TCCR1B, BitsAreSet(CS10));
@@ -27,7 +27,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, One) {
 }
 
 TEST_F(StartSetsHighResolutionTimerPrescaler, Eight) {
-    HighResolutionTimer8 timer;
+    HighResolutionTimer1_8 timer;
     timer.start();
 
     ASSERT_THAT(TCCR1B, BitsAreSet(CS11));
@@ -35,7 +35,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, Eight) {
 }
 
 TEST_F(StartSetsHighResolutionTimerPrescaler, SixtyFour) {
-    HighResolutionTimer64 timer;
+    HighResolutionTimer1_64 timer;
     timer.start();
 
     ASSERT_THAT(TCCR1B, BitsAreSet(CS11, CS10));
@@ -43,7 +43,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, SixtyFour) {
 }
 
 TEST_F(StartSetsHighResolutionTimerPrescaler, TwoHundredFiftySix) {
-    HighResolutionTimer256 timer;
+    HighResolutionTimer1_256 timer;
     timer.start();
 
     ASSERT_THAT(TCCR1B, BitsAreSet(CS12));
@@ -51,7 +51,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, TwoHundredFiftySix) {
 }
 
 TEST_F(StartSetsHighResolutionTimerPrescaler, OneThousandTwentyFour) {
-    HighResolutionTimer1024 timer;
+    HighResolutionTimer1_1024 timer;
     timer.start();
 
     ASSERT_THAT(TCCR1B, BitsAreSet(CS12, CS10));
@@ -59,7 +59,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, OneThousandTwentyFour) {
 }
 
 TEST(Start, ResetsCounterValue) {
-    HighResolutionTimer1 timer;
+    HighResolutionTimer1_1 timer;
     TCNT1 = 0xFFFF;
 
     timer.start();
@@ -68,7 +68,7 @@ TEST(Start, ResetsCounterValue) {
 }
 
 TEST(Reset, ClearsCounterValue) {
-    HighResolutionTimer8 timer;
+    HighResolutionTimer1_8 timer;
     TCNT1 = 0xFFFF;
 
     timer.reset();
@@ -77,7 +77,7 @@ TEST(Reset, ClearsCounterValue) {
 }
 
 TEST(Stop, ClearsClockSelectBits) {
-    HighResolutionTimer1024 timer;
+    HighResolutionTimer1_1024 timer;
     timer.start();
 
     timer.stop();
@@ -87,7 +87,7 @@ TEST(Stop, ClearsClockSelectBits) {
 
 TEST(ElapsedTime, ConvertsTicksToDuration) {
     constexpr auto MICROSECONDS_PER_SEC = 1'000'000ul;
-    using HiResTimer = HighResolutionTimer64;
+    using HiResTimer = HighResolutionTimer1_64;
     HiResTimer timer;
 
     constexpr auto TICKS = 17;
@@ -103,7 +103,7 @@ TEST(NormalMode, SetsWaveformGenerationMode) {
     TCCR1A = 0xFF;
     TCCR1B = 0xFF;
 
-    HighResolutionTimer8 timer;
+    HighResolutionTimer1_8 timer;
 
     ASSERT_THAT(TCCR1A, BitsAreUnset(WGM11, WGM10));
     ASSERT_THAT(TCCR1B, BitsAreUnset(WGM13, WGM12));
@@ -112,16 +112,15 @@ TEST(NormalMode, SetsWaveformGenerationMode) {
 class SpecifiedPeriod : public Test {
 public:
     static constexpr auto NUM_MILLISECONDS = 500;
-    static constexpr auto PERIOD = Chrono::durationCast<HighResolutionTimer64::duration>(
-        Chrono::Milliseconds(NUM_MILLISECONDS));
+    static constexpr auto PERIOD = Chrono::Milliseconds(NUM_MILLISECONDS);
 };
 
 TEST_F(SpecifiedPeriod, SetsClearTimerOnCompareMatchWaveformGenerationMode) {
     TCCR1A = 0xFF;
     TCCR1B = 0;
 
-    HighResolutionTimer64 timer(PERIOD, Timer::PinMode::Toggle, 
-                                Timer::Mode::Repeat);
+    HighResolutionTimer1_64 timer(PERIOD, Timer::PinMode::Toggle, 
+                                  Timer::Mode::Repeat);
 
     ASSERT_THAT(TCCR1A, BitsAreUnset(WGM11, WGM10));
     ASSERT_THAT(TCCR1B, BitsAreSet(WGM12));
@@ -130,18 +129,18 @@ TEST_F(SpecifiedPeriod, SetsClearTimerOnCompareMatchWaveformGenerationMode) {
 
 TEST_F(SpecifiedPeriod, SetsOutputCompareRegister) {
     static constexpr auto MICROS_PER_MILLI = 1000;
-    HighResolutionTimer64 timer(PERIOD, Timer::PinMode::Toggle, Timer::Mode::SingleShot);
+    HighResolutionTimer1_64 timer(PERIOD, Timer::PinMode::Toggle, 
+                                  Timer::Mode::SingleShot);
 
     ASSERT_THAT(OCR1B, Eq(NUM_MILLISECONDS * Chrono::SystemClock::frequency / 
-                          HighResolutionTimer64::prescaler / MICROS_PER_MILLI));
+                          HighResolutionTimer1_64::prescaler / MICROS_PER_MILLI));
 }
 
 class SetPinMode : public Test {
 public:
-    using HiResTimer = HighResolutionTimer1024;
+    using HiResTimer = HighResolutionTimer1_1024;
 
-    static constexpr auto PERIOD = Chrono::durationCast<HiResTimer::duration>(
-        Chrono::Milliseconds(500));
+    static constexpr auto PERIOD = Chrono::Milliseconds(500);
     
     SetPinMode() {
         TCCR1A = 0;
@@ -170,10 +169,9 @@ TEST_F(SetPinMode, Set) {
 
 class SetInterruptServiceRoutine : public Test {
 public:
-    using HiResTimer = HighResolutionTimer8;
+    using HiResTimer = HighResolutionTimer1_8;
 
-    static constexpr auto PERIOD = Chrono::durationCast<HiResTimer::duration>(
-        Chrono::Milliseconds(500));
+    static constexpr auto PERIOD = Chrono::Milliseconds(500);
 };
 
 void interruptServiceRoutine() {}
@@ -189,7 +187,7 @@ TEST_F(SetInterruptServiceRoutine, enablesOutputCompareMatchInterrupt) {
 
 class Destruction : public Test {
 public:
-    using HiResTimer = HighResolutionTimer1;
+    using HiResTimer = HighResolutionTimer1_1;
 
     Destruction() {
         HiResTimer timer(HiResTimer::duration(40), 

@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 
+#include <etl/string.h>
 #include <etl/string_view.h>
 
 #include <avr_cpp/usart_common.h>
@@ -21,3 +22,5 @@ avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, uint8_t data);
 avr_cpp::Usart${n}& operator<<(avr_cpp::Usart${n} &usart, etl::string_view view);
 
 avr_cpp::Usart${n}& operator>>(avr_cpp::Usart${n} &usart, uint8_t &data);
+avr_cpp::Usart${n}& operator>>(avr_cpp::Usart${n} &usart, char &data);
+avr_cpp::Usart${n}& operator>>(avr_cpp::Usart${n} &usart, etl::istring &str);

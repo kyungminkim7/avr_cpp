@@ -2,21 +2,15 @@
 
 #include <stdint.h>
 
-#include "chrono.h"
-#include "interrupt.h"
-#include "ratio.h"
+#include <avr_cpp/chrono.h>
+#include <avr_cpp/interrupt.h>
+#include <avr_cpp/ratio.h>
+#include <avr_cpp/timer_common.h>
 
 namespace avr_cpp {
 
-namespace Timer {
-
-enum class Mode { Repeat, SingleShot };
-enum class PinMode { Toggle, Clear, Set };
-
-} // namespace Timer
-
 template<unsigned int PRESCALER>
-class HighResolutionTimer {
+class HighResolutionTimer${n} {
     static_assert(PRESCALER == 1 ||
                   PRESCALER == 8 ||
                   PRESCALER == 64 ||
@@ -28,19 +22,21 @@ public:
                                       Ratio<PRESCALER, Chrono::SystemClock::frequency>>;
     static constexpr auto prescaler = PRESCALER;
 
-    HighResolutionTimer();
-    HighResolutionTimer(const duration &period, Timer::PinMode pinMode, Timer::Mode mode);
-    HighResolutionTimer(const duration &period, 
-                        InterruptServiceRoutine interruptServiceRoutine, 
-                        Timer::Mode mode);
+    HighResolutionTimer${n}();
+    HighResolutionTimer${n}(const duration &period, Timer::PinMode pinMode, Timer::Mode mode);
+    HighResolutionTimer${n}(const duration &period, 
+                            InterruptServiceRoutine interruptServiceRoutine, 
+                            Timer::Mode mode);
 
-    ~HighResolutionTimer();
+    ~HighResolutionTimer${n}();
 
     void start();
     void reset();
     void stop();
 
     duration elapsedTime() const;
+
+    static void setClockPrescaler();
 
 private:
     static void setNormalWaveformGenerationMode();
@@ -54,10 +50,10 @@ private:
                                                         Timer::Mode mode);
 };
 
-using HighResolutionTimer1 = HighResolutionTimer<1>;
-using HighResolutionTimer8 = HighResolutionTimer<8>;
-using HighResolutionTimer64 = HighResolutionTimer<64>;
-using HighResolutionTimer256 = HighResolutionTimer<256>;
-using HighResolutionTimer1024 = HighResolutionTimer<1024>;
+using HighResolutionTimer${n}_1 = HighResolutionTimer${n}<1>;
+using HighResolutionTimer${n}_8 = HighResolutionTimer${n}<8>;
+using HighResolutionTimer${n}_64 = HighResolutionTimer${n}<64>;
+using HighResolutionTimer${n}_256 = HighResolutionTimer${n}<256>;
+using HighResolutionTimer${n}_1024 = HighResolutionTimer${n}<1024>;
 
 } // namespace avr_cpp

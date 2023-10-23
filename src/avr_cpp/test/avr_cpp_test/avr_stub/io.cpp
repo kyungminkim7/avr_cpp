@@ -45,6 +45,7 @@ volatile uint8_t OCR0B = 0;
 volatile uint8_t TCCR0A = 0;
 volatile uint8_t TCCR0B = 0;
 
+volatile uint16_t ICR1 = 0;
 volatile uint16_t OCR1A = 0;
 volatile uint16_t OCR1B = 0;
 volatile uint8_t TIMSK1 = 0;

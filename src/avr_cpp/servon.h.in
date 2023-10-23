@@ -1,0 +1,39 @@
+#pragma once
+
+#include <stdint.h>
+
+#include <avr_cpp/angle.h>
+#include <avr_cpp/chrono.h>
+#include <avr_cpp/ratio.h>
+#include <avr_cpp/timer_common.h>
+
+namespace avr_cpp {
+
+class Servo${n} {
+private:
+    using degree = Degree<float>;
+
+public:
+    using duration = Chrono::Duration<uint16_t, Micro>;
+
+    constexpr static auto frequency = 1'000'000ul;
+
+    Servo${n}(Timer::Channel channels, 
+              duration minPulse = Chrono::Milliseconds(1),
+              duration maxPulse = Chrono::Milliseconds(2),
+              duration period = Chrono::Milliseconds(20),
+              degree minAngle = 0.0f,
+              degree maxAngle = 180.0f);
+
+    void setPosition(degree angle);
+    void setPosition(degree angle, Timer::Channel channels);
+
+private:
+    Timer::Channel channels;
+    const duration minPulse;
+    const duration maxPulse;
+    const degree minAngle;
+    const degree maxAngle;
+};
+
+} // namespace avr_cpp

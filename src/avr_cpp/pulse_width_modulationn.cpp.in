@@ -13,24 +13,24 @@ void setFastPulseWidthModulationMode() {
     unsetBits(TCCR${n}B, WGM${n}2);
 }
 
-void setNonInvertingCompareOutputMode(PulseWidthModulation::Channel channels) {
-    if ((channels & PulseWidthModulation::Channel::A) == PulseWidthModulation::Channel::A) {
+void setNonInvertingCompareOutputMode(Timer::Channel channels) {
+    if ((channels & Timer::Channel::A) == Timer::Channel::A) {
         unsetBits(TCCR${n}A, COM${n}A0);
         setBits(TCCR${n}A, COM${n}A1);
     }
 
-    if ((channels & PulseWidthModulation::Channel::B) == PulseWidthModulation::Channel::B) {
+    if ((channels & Timer::Channel::B) == Timer::Channel::B) {
         unsetBits(TCCR${n}A, COM${n}B0);
         setBits(TCCR${n}A, COM${n}B1);
     }
 }
 
-void setDutyCycle(uint8_t dutyCycle, PulseWidthModulation::Channel channels) {
-    if ((channels & PulseWidthModulation::Channel::A) == PulseWidthModulation::Channel::A) {
+void setDutyCycle(uint8_t dutyCycle, Timer::Channel channels) {
+    if ((channels & Timer::Channel::A) == Timer::Channel::A) {
         OCR${n}A = dutyCycle;
     }
 
-    if ((channels & PulseWidthModulation::Channel::B) == PulseWidthModulation::Channel::B) {
+    if ((channels & Timer::Channel::B) == Timer::Channel::B) {
         OCR${n}B = dutyCycle;
     }
 }
@@ -44,7 +44,7 @@ void disconnectOutputComparePins() {
 namespace avr_cpp {
 
 template<unsigned int PRESCALER>
-PulseWidthModulation${n}<PRESCALER>::PulseWidthModulation${n}(PulseWidthModulation::Channel channels) : 
+PulseWidthModulation${n}<PRESCALER>::PulseWidthModulation${n}(Timer::Channel channels) : 
     channels(channels) {
     setFastPulseWidthModulationMode();
     setNonInvertingCompareOutputMode(channels);
@@ -63,7 +63,7 @@ void PulseWidthModulation${n}<PRESCALER>::set(uint8_t dutyCycle) {
 
 template<unsigned int PRESCALER>
 void PulseWidthModulation${n}<PRESCALER>::set(uint8_t dutyCycle, 
-                                              PulseWidthModulation::Channel channels) {
+                                              Timer::Channel channels) {
     setDutyCycle(dutyCycle, channels);
 }
 

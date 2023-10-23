@@ -22,7 +22,7 @@ int main() {
 
     etl::string<8> timeStr;
 
-    HighResolutionTimer<64> timer;
+    HighResolutionTimer1_64 timer;
     timer.start();
 
     while (true) {

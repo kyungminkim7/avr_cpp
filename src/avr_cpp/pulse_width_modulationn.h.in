@@ -2,24 +2,24 @@
 
 #include <stdint.h>
 
-#include <avr_cpp/pulse_width_modulation_common.h>
+#include <avr_cpp/timer_common.h>
 
 namespace avr_cpp {
 
 template<unsigned int PRESCALER>
 class PulseWidthModulation${n} {
 public:
-    explicit PulseWidthModulation${n}(PulseWidthModulation::Channel channels);
+    explicit PulseWidthModulation${n}(Timer::Channel channels);
     ~PulseWidthModulation${n}();
 
     void set(uint8_t dutyCycle);
-    void set(uint8_t dutyCycle, PulseWidthModulation::Channel channels);
+    void set(uint8_t dutyCycle, Timer::Channel channels);
 
     void start();
     void stop();
 
 private:
-    PulseWidthModulation::Channel channels;
+    Timer::Channel channels;
 };
 
 using PulseWidthModulation${n}_1 = PulseWidthModulation${n}<1>;

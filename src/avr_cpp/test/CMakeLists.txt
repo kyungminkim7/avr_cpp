@@ -26,6 +26,9 @@ endfunction()
 add_avr_test(TARGET test_analog_digital_converter 
              SOURCE test_analog_digital_converter.cpp)
 
+add_avr_test(TARGET test_angle
+             SOURCE test_angle.cpp)
+
 add_avr_test(TARGET test_bit
              SOURCE test_bit.cpp)
 
@@ -34,6 +37,9 @@ add_avr_test(TARGET test_chrono
 
 add_avr_test(TARGET test_external_interrupt 
              SOURCE test_external_interrupt.cpp)
+
+add_avr_test(TARGET test_math
+             SOURCE test_math.cpp)
 
 add_avr_test(TARGET test_pin_change_interrupt 
              SOURCE test_pin_change_interrupt.cpp)
@@ -46,6 +52,9 @@ add_avr_test(TARGET test_pulse_width_modulation
 
 add_avr_test(TARGET test_ratio 
              SOURCE test_ratio.cpp)
+
+add_avr_test(TARGET test_servo 
+             SOURCE test_servo.cpp)
 
 add_avr_test(TARGET test_timer
              SOURCE test_timer.cpp)

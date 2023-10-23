@@ -8,7 +8,7 @@ This program is an example of using hardware pulse width modulation.
 #include <avr_cpp/pulse_width_modulation.h>
 
 using namespace avr_cpp;
-using namespace PulseWidthModulation;
+using namespace Timer;
 
 int main() {
     uint8_t dutyCycleA = 0;

@@ -1,9 +1,12 @@
 #pragma once
 
-#include "type_traits.h"
+#include <avr_cpp/type_traits.h>
 
 namespace avr_cpp {
-namespace PulseWidthModulation {
+namespace Timer {
+
+enum class Mode { Repeat, SingleShot };
+enum class PinMode { Toggle, Clear, Set };
 
 enum class Channel {
     A = 1,
@@ -49,5 +52,5 @@ inline Channel& operator^=(Channel &lhs, Channel rhs) noexcept {
     return lhs = lhs ^ rhs;
 }
 
-} // namespace PulseWidthModulation
+} // namespace Timer
 } // namespace avr_cpp

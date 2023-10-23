@@ -144,6 +144,7 @@ extern volatile uint8_t TCCR0B;
 #define CS01    1
 #define CS00    0
 
+extern volatile uint16_t ICR1;
 extern volatile uint16_t OCR1A;
 extern volatile uint16_t OCR1B;
 

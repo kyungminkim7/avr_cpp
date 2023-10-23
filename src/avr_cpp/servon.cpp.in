@@ -1,0 +1,71 @@
+#include <avr_cpp/servo.h>
+
+#include <avr/io.h>
+#include <etl/algorithm.h>
+#include <etl/numeric.h>
+
+#include <avr_cpp/bit.h>
+#include <avr_cpp/high_resolution_timer${n}.h>
+
+namespace {
+
+using namespace avr_cpp;
+
+void setFastPWMInputCaptureMode() {
+    unsetBits(TCCR${n}A, WGM${n}0);
+    setBits(TCCR${n}A, WGM${n}1);
+    setBits(TCCR${n}B, WGM${n}3, WGM${n}2);
+}
+
+void enableChannels(Timer::Channel channels) {
+    if ((channels & Timer::Channel::A) == Timer::Channel::A) {
+        unsetBits(TCCR${n}A, COM${n}A0);
+        setBits(TCCR${n}A, COM${n}A1);
+    }
+
+    if ((channels & Timer::Channel::B) == Timer::Channel::B) {
+        unsetBits(TCCR${n}A, COM${n}B0);
+        setBits(TCCR${n}A, COM${n}B1);
+    }
+}
+
+} // namespace
+
+namespace avr_cpp {
+
+using HiResTimer = HighResolutionTimer${n}<Chrono::SystemClock::frequency / Servo${n}::frequency>;
+
+Servo${n}::Servo${n}(Timer::Channel channels,
+                     duration minPulse, duration maxPulse, duration period,
+                     degree minAngle, degree maxAngle) : 
+                     channels(channels),
+                     minPulse(minPulse), maxPulse(maxPulse),
+                     minAngle(minAngle), maxAngle(maxAngle) {
+    setFastPWMInputCaptureMode();
+    ICR1 = period.count();
+    enableChannels(channels);
+
+    HiResTimer::setClockPrescaler();
+}
+
+void Servo${n}::setPosition(degree angle) {
+    setPosition(angle, channels);
+}
+
+void Servo${n}::setPosition(degree angle,
+                            Timer::Channel channels) {
+    angle = etl::clamp(angle, minAngle, maxAngle);
+    const auto interpolation = (angle - minAngle) / (maxAngle - minAngle);
+    const auto pulse = etl::lerp(minPulse.count(), maxPulse.count(),
+                                 interpolation);
+
+    if ((channels & Timer::Channel::A) == Timer::Channel::A) {
+        OCR1A = pulse;
+    }
+
+    if ((channels & Timer::Channel::B) == Timer::Channel::B) {
+        OCR1B = pulse;
+    }
+}
+
+} // namespace avr_cpp

@@ -1,4 +1,4 @@
 #pragma once
 
 #include <avr_cpp/timer_common.h>
-${include_pulse_width_modulation_n_headers}
+${include_high_resolution_timer_n_headers}

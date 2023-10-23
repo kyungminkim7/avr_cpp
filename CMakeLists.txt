@@ -18,6 +18,7 @@ set(MCU atmega168 CACHE STRING "Atmel microcontroller type")
 set(CPU_FREQ 1000000UL CACHE STRING "Clock frequency")
 set(NUM_USART_MODULES 1 CACHE STRING "Number of USART modules")
 set(TIMER_MODULES 0 2 CACHE STRING "Timer module numbers")
+set(HIGH_RESOLUTION_TIMER_MODULES 1 CACHE STRING "High resolution timer module numbers")
 
 set(PROGRAMMER_TYPE usbtiny CACHE STRING "Programmer type")
 

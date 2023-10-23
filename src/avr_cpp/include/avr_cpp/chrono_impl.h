@@ -63,7 +63,7 @@ constexpr Duration<Rep, Period>::Duration(const Rep2& ticks) :
     ticks(static_cast<Rep>(ticks)) { }
 
 template<typename Rep, typename Period>
-template<typename Rep2, typename Period2, typename>
+template<typename Rep2, typename Period2>
 constexpr Duration<Rep, Period>::Duration(const Duration<Rep2, Period2> &d)
     : ticks(durationCast<Duration>(d).count()) {}
 

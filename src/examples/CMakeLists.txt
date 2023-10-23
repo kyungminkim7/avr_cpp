@@ -46,6 +46,24 @@ AddExecutableAVR(
 )
 
 AddExecutableAVR(
+    TARGET servo
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES servo.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
+
+AddExecutableAVR(
+    TARGET servo_characterization
+    MCU "${MCU}"
+    PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"
+    SOURCES servo_characterization.cpp
+    INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}"
+    LIBRARIES avr_cpp
+)
+
+AddExecutableAVR(
     TARGET timer
     MCU "${MCU}"
     PROGRAMMER_TYPE "${PROGRAMMER_TYPE}"

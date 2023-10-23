@@ -9,30 +9,30 @@ namespace {
 
 using namespace avr_cpp;
 
-InterruptServiceRoutine highResolutionTimerCompareMatchInterruptServiceRoutineA;
-InterruptServiceRoutine highResolutionTimerCompareMatchInterruptServiceRoutineB;
+InterruptServiceRoutine highResolutionTimer${n}CompareMatchInterruptServiceRoutineA;
+InterruptServiceRoutine highResolutionTimer${n}CompareMatchInterruptServiceRoutineB;
 
 } // namespace
 
-ISR(TIMER1_COMPA_vect) {
-    highResolutionTimerCompareMatchInterruptServiceRoutineA();
+ISR(TIMER${n}_COMPA_vect) {
+    highResolutionTimer${n}CompareMatchInterruptServiceRoutineA();
 }
 
-ISR(TIMER1_COMPB_vect) {
-    highResolutionTimerCompareMatchInterruptServiceRoutineB();
+ISR(TIMER${n}_COMPB_vect) {
+    highResolutionTimer${n}CompareMatchInterruptServiceRoutineB();
 }
 
 namespace avr_cpp {
 
 template<unsigned int PRESCALER>
-HighResolutionTimer<PRESCALER>::HighResolutionTimer() {
+HighResolutionTimer${n}<PRESCALER>::HighResolutionTimer${n}() {
     setNormalWaveformGenerationMode();
 }
 
 template<unsigned int PRESCALER>
-HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period, 
-                                                    Timer::PinMode pinMode, 
-                                                    Timer::Mode mode) {
+HighResolutionTimer${n}<PRESCALER>::HighResolutionTimer${n}(const duration &period, 
+                                                            Timer::PinMode pinMode, 
+                                                            Timer::Mode mode) {
     setClearTimerOnCompareMatchWaveformGenerationMode();
     setPeriod(period, mode);
 
@@ -40,9 +40,9 @@ HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period,
 }
 
 template<unsigned int PRESCALER>
-HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period, 
-                                                    InterruptServiceRoutine interruptServiceRoutine, 
-                                                    Timer::Mode mode) {
+HighResolutionTimer${n}<PRESCALER>::HighResolutionTimer${n}(const duration &period, 
+                                                            InterruptServiceRoutine interruptServiceRoutine, 
+                                                            Timer::Mode mode) {
     setClearTimerOnCompareMatchWaveformGenerationMode();
     setPeriod(period, mode);
 
@@ -51,33 +51,33 @@ HighResolutionTimer<PRESCALER>::HighResolutionTimer(const duration &period,
 }
 
 template<unsigned int PRESCALER>
-HighResolutionTimer<PRESCALER>::~HighResolutionTimer() {
+HighResolutionTimer${n}<PRESCALER>::~HighResolutionTimer${n}() {
     stop();
     disconnectOutputComparePins();
     disableTimerInterrupts();
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::setNormalWaveformGenerationMode() {
+void HighResolutionTimer${n}<PRESCALER>::setNormalWaveformGenerationMode() {
     unsetBits(TCCR1A, WGM11, WGM10);
     unsetBits(TCCR1B, WGM13, WGM12);
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::setClearTimerOnCompareMatchWaveformGenerationMode() {
+void HighResolutionTimer${n}<PRESCALER>::setClearTimerOnCompareMatchWaveformGenerationMode() {
     unsetBits(TCCR1A, WGM11, WGM10);
     setBits(TCCR1B, WGM12);
     unsetBits(TCCR1B, WGM13);
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::disableTimerInterrupts() {
+void HighResolutionTimer${n}<PRESCALER>::disableTimerInterrupts() {
     unsetBits(TIMSK1, ICIE1, OCIE1B, OCIE1A, TOIE1);
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::setPeriod(const duration &period, 
-                                               Timer::Mode mode) {
+void HighResolutionTimer${n}<PRESCALER>::setPeriod(const duration &period, 
+                                                   Timer::Mode mode) {
     switch (mode) {
     case Timer::Mode::Repeat:
         OCR1A = period.count();
@@ -90,8 +90,8 @@ void HighResolutionTimer<PRESCALER>::setPeriod(const duration &period,
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::setPinMode(Timer::PinMode pinMode,
-                                                Timer::Mode mode) {
+void HighResolutionTimer${n}<PRESCALER>::setPinMode(Timer::PinMode pinMode,
+                                                    Timer::Mode mode) {
     const auto com1 = mode == Timer::Mode::Repeat ? COM1A1 : COM1B1;
     const auto com0 = mode == Timer::Mode::Repeat ? COM1A0 : COM1B0;
 
@@ -113,12 +113,12 @@ void HighResolutionTimer<PRESCALER>::setPinMode(Timer::PinMode pinMode,
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::disconnectOutputComparePins() {
+void HighResolutionTimer${n}<PRESCALER>::disconnectOutputComparePins() {
     unsetBits(TCCR1A, COM1A1, COM1A0, COM1B1, COM1B0);
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::enableOutputCompareInterrupt(Timer::Mode mode) {
+void HighResolutionTimer${n}<PRESCALER>::enableOutputCompareInterrupt(Timer::Mode mode) {
     switch (mode) {
     case Timer::Mode::Repeat:
         setBits(TIMSK1, OCIE1A);
@@ -131,23 +131,37 @@ void HighResolutionTimer<PRESCALER>::enableOutputCompareInterrupt(Timer::Mode mo
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::setOutputCompareInterruptServiceRoutine(InterruptServiceRoutine interruptServiceRoutine, 
+void HighResolutionTimer${n}<PRESCALER>::setOutputCompareInterruptServiceRoutine(InterruptServiceRoutine interruptServiceRoutine, 
                                                                              Timer::Mode mode) {
     switch (mode) {
     case Timer::Mode::Repeat:
-        highResolutionTimerCompareMatchInterruptServiceRoutineA = interruptServiceRoutine;
+        highResolutionTimer${n}CompareMatchInterruptServiceRoutineA = interruptServiceRoutine;
         break;
 
     case Timer::Mode::SingleShot:
-        highResolutionTimerCompareMatchInterruptServiceRoutineB = interruptServiceRoutine;
+        highResolutionTimer${n}CompareMatchInterruptServiceRoutineB = interruptServiceRoutine;
         break;
     }
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::start() {
+void HighResolutionTimer${n}<PRESCALER>::start() {
     reset();
+    setClockPrescaler();
+}
 
+template<unsigned int PRESCALER>
+void HighResolutionTimer${n}<PRESCALER>::reset() {
+    TCNT1 = 0;
+}
+
+template<unsigned int PRESCALER>
+void HighResolutionTimer${n}<PRESCALER>::stop() {
+    unsetBits(TCCR1B, CS12, CS11, CS10);
+}
+
+template<unsigned int PRESCALER>
+void HighResolutionTimer${n}<PRESCALER>::setClockPrescaler() {
     switch (PRESCALER) {
     case 1:
         setBits(TCCR1B, CS10);
@@ -180,24 +194,15 @@ void HighResolutionTimer<PRESCALER>::start() {
 }
 
 template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::reset() {
-    TCNT1 = 0;
-}
-
-template<unsigned int PRESCALER>
-void HighResolutionTimer<PRESCALER>::stop() {
-    unsetBits(TCCR1B, CS12, CS11, CS10);
-}
-
-template<unsigned int PRESCALER>
-typename HighResolutionTimer<PRESCALER>::duration HighResolutionTimer<PRESCALER>::elapsedTime() const {
+typename HighResolutionTimer${n}<PRESCALER>::duration 
+HighResolutionTimer${n}<PRESCALER>::elapsedTime() const {
     return duration(TCNT1);
 }
 
-template class HighResolutionTimer<1>;
-template class HighResolutionTimer<8>;
-template class HighResolutionTimer<64>;
-template class HighResolutionTimer<256>;
-template class HighResolutionTimer<1024>;
+template class HighResolutionTimer${n}<1>;
+template class HighResolutionTimer${n}<8>;
+template class HighResolutionTimer${n}<64>;
+template class HighResolutionTimer${n}<256>;
+template class HighResolutionTimer${n}<1024>;
 
 } // namespace avr_cpp

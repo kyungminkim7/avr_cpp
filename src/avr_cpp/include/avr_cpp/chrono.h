@@ -103,11 +103,7 @@ public:
 		  				 etl::negation<etl::is_floating_point<Rep2>>>>::value>>
     constexpr explicit Duration(const Rep2& ticks);
 
-    template<typename Rep2, typename Period2, typename = etl::enable_if_t<etl::conjunction<
-        etl::is_convertible<const Rep2&, rep>, 
-        etl::disjunction<etl::is_floating_point<rep>,
-                         etl::conjunction<isHarmonic<Period2>,
-                                          etl::negation<etl::is_floating_point<Rep2>>>>>::value>>
+    template<typename Rep2, typename Period2>
     constexpr Duration(const Duration<Rep2, Period2> &d);
 
 	~Duration() = default;

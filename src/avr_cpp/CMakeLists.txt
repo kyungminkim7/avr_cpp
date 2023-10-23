@@ -6,7 +6,6 @@ add_library(avr_cpp
     external_interrupt.cpp
     interrupt.cpp
     memory.cpp
-    timer.cpp
 )
 
 # Generate USART source/header files
@@ -21,6 +20,7 @@ configure_file(usart.h.in "include/avr_cpp/usart.h")
 
 # Generate timer & pulse width modulation source/header files
 foreach(n ${TIMER_MODULES})
+    # Pulse width modulation
     configure_file(pulse_width_modulationn.h.in 
                    "include/avr_cpp/pulse_width_modulation${n}.h")
     configure_file(pulse_width_modulationn.cpp.in 
@@ -28,11 +28,37 @@ foreach(n ${TIMER_MODULES})
     target_sources(avr_cpp PRIVATE 
                    "${CMAKE_CURRENT_BINARY_DIR}/pulse_width_modulation${n}.cpp")
     string(APPEND include_pulse_width_modulation_n_headers 
-                  "\n#include \"pulse_width_modulation${n}.h\"")
+           "\n#include \"pulse_width_modulation${n}.h\"")
 endforeach()
 configure_file(pulse_width_modulation.h.in 
                "include/avr_cpp/pulse_width_modulation.h")
 
+# Generate high resolution timer, pulse width modulation, & servo source/header files
+foreach(n ${HIGH_RESOLUTION_TIMER_MODULES})
+    # Timer
+    configure_file(high_resolution_timern.h.in 
+                   "include/avr_cpp/high_resolution_timer${n}.h")
+    configure_file(high_resolution_timern.cpp.in 
+                   "high_resolution_timer${n}.cpp")
+    target_sources(avr_cpp PRIVATE 
+                   "${CMAKE_CURRENT_BINARY_DIR}/high_resolution_timer${n}.cpp")
+    string(APPEND include_high_resolution_timer_n_headers 
+           "\n#include \"high_resolution_timer${n}.h\"")
+
+    # Servo
+    configure_file(servon.h.in 
+                   "include/avr_cpp/servo${n}.h")
+    configure_file(servon.cpp.in 
+                   "servo${n}.cpp")
+    target_sources(avr_cpp PRIVATE 
+                   "${CMAKE_CURRENT_BINARY_DIR}/servo${n}.cpp")
+    string(APPEND include_servo_n_headers 
+           "\n#include \"servo${n}.h\"")
+endforeach()
+configure_file(timer.h.in "include/avr_cpp/timer.h")
+configure_file(servo.h.in "include/avr_cpp/servo.h")
+
+# Define avr_cpp target attributes
 target_include_directories(avr_cpp PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
