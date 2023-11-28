@@ -56,6 +56,9 @@ add_avr_test(TARGET test_ratio
 add_avr_test(TARGET test_servo 
              SOURCE test_servo.cpp)
 
+add_avr_test(TARGET test_spi 
+             SOURCE test_spi.cpp)
+
 add_avr_test(TARGET test_timer
              SOURCE test_timer.cpp)
 
