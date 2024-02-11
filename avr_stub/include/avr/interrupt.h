@@ -2,5 +2,5 @@
 
 #define ISR(vect) void isr##vect()
 
-void sei() {}
-void cli() {}
+void sei();
+void cli();

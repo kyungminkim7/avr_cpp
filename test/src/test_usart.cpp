@@ -10,7 +10,7 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-class UsartInitialization : public Test {
+class UsartConstructor : public Test {
 public:
     static constexpr auto DATA_SIZE = Usart::DataSize::EightBits;
     static constexpr auto NUM_STOP_BITS = Usart::NumStopBits::One;
@@ -21,19 +21,19 @@ public:
     }
 };
 
-TEST_F(UsartInitialization, EnablesTransmitter) {
+TEST_F(UsartConstructor, EnablesTransmitter) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
     ASSERT_THAT(UCSR0B, BitsAreSet(TXEN0));
 }
 
-TEST_F(UsartInitialization, EnablesReceiver) {
+TEST_F(UsartConstructor, EnablesReceiver) {
     Usart0 usart(DATA_SIZE, NUM_STOP_BITS, BAUD_RATE);
 
     ASSERT_THAT(UCSR0B, BitsAreSet(RXEN0));
 }
 
-class UsartDestruction : public Test {
+class UsartDestructor : public Test {
 public:
     void SetUp() override {
         Usart0 usart(Usart::DataSize::NineBits, 
@@ -42,11 +42,11 @@ public:
     }
 };
 
-TEST_F(UsartDestruction, DisablesTransmitter) {
+TEST_F(UsartDestructor, DisablesTransmitter) {
     ASSERT_THAT(UCSR0B, BitsAreUnset(TXEN0));
 }
 
-TEST_F(UsartDestruction, DisablesReceiver) {
+TEST_F(UsartDestructor, DisablesReceiver) {
     ASSERT_THAT(UCSR0B, BitsAreUnset(RXEN0));
 }
 

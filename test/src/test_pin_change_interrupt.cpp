@@ -8,9 +8,13 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
+namespace {
+
 void interruptServiceRoutine() {}
 
-TEST(Set, EnablesInterrupt) {
+} // namespace
+
+TEST(PinChangeInterrupt, Enable) {
     PCICR = 0;
 
     PinChangeInterrupt::set(PCIE1, 
@@ -20,7 +24,7 @@ TEST(Set, EnablesInterrupt) {
     ASSERT_THAT(PCICR, BitsAreSet(PCIE1));
 }
 
-TEST(Set, SetsOneBitMaskBit) {
+TEST(PinChangeInterrupt, SetOneBitMaskBit) {
     PCMSK2 = 0;
 
     PinChangeInterrupt::set(PCIE2,
@@ -30,7 +34,7 @@ TEST(Set, SetsOneBitMaskBit) {
     ASSERT_THAT(PCMSK2, BitsAreSet(PD2));
 }
 
-TEST(Set, SetsMultipleBitMaskBits) {
+TEST(PinChangeInterrupt, SetMultipleBitMaskBits) {
     PCMSK1 = 0;
 
     PinChangeInterrupt::set(PCIE1, 

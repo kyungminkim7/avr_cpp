@@ -1,30 +1,24 @@
-cmake_minimum_required(VERSION 3.20)
-project(AvrCpp VERSION 1.0.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.15)
+project(AvrCpp LANGUAGES CXX)
 
 #----------------------------
 # Project Settings
 #----------------------------
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_NO_SYSTEM_FROM_IMPORTED ON)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/module")
-include(GetETL)
-
-enable_testing()
+find_package(etl REQUIRED CONFIG)
 
 #----------------------------
 # Global Options
 #----------------------------
-set(MCU atmega168 CACHE STRING "Atmel microcontroller type")
-set(CPU_FREQ 1000000UL CACHE STRING "Clock frequency")
 set(NUM_USART_MODULES 1 CACHE STRING "Number of USART modules")
 set(TIMER_MODULES 0 2 CACHE STRING "Timer module numbers")
 set(HIGH_RESOLUTION_TIMER_MODULES 1 CACHE STRING "High resolution timer module numbers")
 
-set(PROGRAMMER_TYPE usbtiny CACHE STRING "Programmer type")
-
 #----------------------------
-# Library Build
+# Build
 #----------------------------
 add_library(avr_cpp
     src/analog_digital_converter.cpp
@@ -84,7 +78,7 @@ endforeach()
 configure_file(src/timer.h.in "include/avr_cpp/timer.h")
 configure_file(src/servo.h.in "include/avr_cpp/servo.h")
 
-# Define avr_cpp target attributes
+# avr_cpp Attributes
 target_include_directories(avr_cpp PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
@@ -92,41 +86,29 @@ target_include_directories(avr_cpp PUBLIC
 
 target_link_libraries(avr_cpp PUBLIC etl::etl)
 
-target_compile_definitions(avr_cpp PUBLIC
-    "F_CPU=${CPU_FREQ}"
-)
+#----------------------------
+# Test (off-board)
+#----------------------------
+if (NOT BUILD_TESTING STREQUAL OFF)
+    add_subdirectory(avr_stub)
 
-target_compile_options(avr_cpp 
-    PUBLIC
-        "-fdata-sections"
-        "-ffunction-sections"
-        "-fno-exceptions"
-        "-fno-threadsafe-statics"
-        "-Wall"
-        "-Wextra"
-        "-Wpedantic"
-    PRIVATE
-        "-Werror"
-)
-
-if (CMAKE_SYSTEM_NAME STREQUAL "Generic")
-    # AVR build options
-    target_compile_options(avr_cpp PUBLIC "-mmcu=${MCU}")
-
-    target_compile_definitions(etl INTERFACE 
-        "ETL_NO_STL"
-        "ETL_NO_CPP_NAN_SUPPORT"
-    )
-
-    target_link_options(avr_cpp PUBLIC
-        "-flto"
-        "-fuse-linker-plugin"
-        "-Wl,--gc-sections"
-        "-mmcu=atmega168"
-    )
-
-    add_subdirectory(examples)
-else()
-    # Enable unit tests for host machine builds
+    enable_testing()
     add_subdirectory(test)
 endif()
+
+#----------------------------
+# Install
+#----------------------------
+include(GNUInstallDirs)
+
+install(TARGETS avr_cpp
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(
+    DIRECTORY
+        ${PROJECT_SOURCE_DIR}/include/
+        ${PROJECT_BINARY_DIR}/include/
+    DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}
+)

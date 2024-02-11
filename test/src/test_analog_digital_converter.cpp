@@ -9,7 +9,7 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-class SetVoltageReference : public Test {
+class ADCSetVoltageReference : public Test {
 public:
     static constexpr auto CLOCK_PRESCALER = AnalogDigitalConverter::ClockPrescaler::Two;
     static constexpr auto TRIGGER_MODE = AnalogDigitalConverter::TriggerMode::Single;
@@ -19,7 +19,7 @@ public:
     }
 };
 
-TEST_F(SetVoltageReference, AREF) {
+TEST_F(ADCSetVoltageReference, AREF) {
     ADMUX = 0xFF;
 
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AREF,
@@ -28,21 +28,21 @@ TEST_F(SetVoltageReference, AREF) {
     ASSERT_THAT(ADMUX, BitsAreUnset(REFS1, REFS0));
 }
 
-TEST_F(SetVoltageReference, AVCC) {
+TEST_F(ADCSetVoltageReference, AVCC) {
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AVCC,
                                CLOCK_PRESCALER, TRIGGER_MODE);
 
     ASSERT_THAT(ADMUX, Eq(createBitMask<uint8_t>(REFS0)));
 }
 
-TEST_F(SetVoltageReference, Internal1_1V) {
+TEST_F(ADCSetVoltageReference, Internal1_1V) {
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::Internal1_1V,
                                CLOCK_PRESCALER, TRIGGER_MODE);
 
     ASSERT_THAT(ADMUX, Eq(createBitMask<uint8_t>(REFS1, REFS0)));
 }
 
-class SetClockPrescaler : public Test {
+class ADCSetClockPrescaler : public Test {
 public:
     static constexpr auto VOLTAGE_REFERENCE = AnalogDigitalConverter::VoltageReference::AVCC;
     static constexpr auto TRIGGER_MODE = AnalogDigitalConverter::TriggerMode::Single;
@@ -52,7 +52,7 @@ public:
     }
 };
 
-TEST_F(SetClockPrescaler, Two) {
+TEST_F(ADCSetClockPrescaler, Two) {
     ADCSRA = 0xFF;
 
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
@@ -62,7 +62,7 @@ TEST_F(SetClockPrescaler, Two) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS2, ADPS1, ADPS0));
 }
 
-TEST_F(SetClockPrescaler, Four) {
+TEST_F(ADCSetClockPrescaler, Four) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::Four,
                                TRIGGER_MODE);
@@ -71,7 +71,7 @@ TEST_F(SetClockPrescaler, Four) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS2, ADPS0));
 }
 
-TEST_F(SetClockPrescaler, Eight) {
+TEST_F(ADCSetClockPrescaler, Eight) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::Eight,
                                TRIGGER_MODE);
@@ -80,7 +80,7 @@ TEST_F(SetClockPrescaler, Eight) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS2));
 }
 
-TEST_F(SetClockPrescaler, Sixteen) {
+TEST_F(ADCSetClockPrescaler, Sixteen) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::Sixteen,
                                TRIGGER_MODE);
@@ -89,7 +89,7 @@ TEST_F(SetClockPrescaler, Sixteen) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS1, ADPS0));
 }
 
-TEST_F(SetClockPrescaler, ThirtyTwo) {
+TEST_F(ADCSetClockPrescaler, ThirtyTwo) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::ThirtyTwo,
                                TRIGGER_MODE);
@@ -98,7 +98,7 @@ TEST_F(SetClockPrescaler, ThirtyTwo) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS1));
 }
 
-TEST_F(SetClockPrescaler, SixtyFour) {
+TEST_F(ADCSetClockPrescaler, SixtyFour) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::SixtyFour,
                                TRIGGER_MODE);
@@ -107,7 +107,7 @@ TEST_F(SetClockPrescaler, SixtyFour) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADPS0));
 }
 
-TEST_F(SetClockPrescaler, OneHundredTwentyEight) {
+TEST_F(ADCSetClockPrescaler, OneHundredTwentyEight) {
     AnalogDigitalConverter adc(VOLTAGE_REFERENCE,
                                AnalogDigitalConverter::ClockPrescaler::OneHundredTwentyEight,
                                TRIGGER_MODE);
@@ -115,7 +115,7 @@ TEST_F(SetClockPrescaler, OneHundredTwentyEight) {
     ASSERT_THAT(ADCSRA, BitsAreSet(ADPS2, ADPS1, ADPS0));
 }
 
-TEST(Creation, EnablesADC) {
+TEST(ADC, CreationEnablesADC) {
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AVCC, 
                                AnalogDigitalConverter::ClockPrescaler::Eight, 
                                AnalogDigitalConverter::TriggerMode::Single);
@@ -123,7 +123,7 @@ TEST(Creation, EnablesADC) {
     ASSERT_THAT(ADCSRA, BitsAreSet(ADEN));
 }
 
-TEST(Destruction, DisablesADC) {
+TEST(ADC, DestructionDisablesADC) {
     {
         AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AVCC, 
                                    AnalogDigitalConverter::ClockPrescaler::Eight, 
@@ -133,7 +133,7 @@ TEST(Destruction, DisablesADC) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADEN));
 }
 
-TEST(StartConversion, SetsADSCBit) {
+TEST(ADC, StartConversionSetsADSCBit) {
     AnalogDigitalConverter adc(AnalogDigitalConverter::VoltageReference::AVCC, 
                                AnalogDigitalConverter::ClockPrescaler::Eight, 
                                AnalogDigitalConverter::TriggerMode::Single);
@@ -143,34 +143,34 @@ TEST(StartConversion, SetsADSCBit) {
     ASSERT_THAT(ADCSRA, BitsAreSet(ADSC));
 }
 
-class IsConversionInProgress : public Test {
+class ADCIsConversionInProgress : public Test {
 
 public:
-    IsConversionInProgress() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V, 
-                                   AnalogDigitalConverter::ClockPrescaler::SixtyFour, 
-                                   AnalogDigitalConverter::TriggerMode::Single) {
+    ADCIsConversionInProgress() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V, 
+                                      AnalogDigitalConverter::ClockPrescaler::SixtyFour, 
+                                      AnalogDigitalConverter::TriggerMode::Single) {
         adc.startConversion();
     }
 
     AnalogDigitalConverter adc;
 };
 
-TEST_F(IsConversionInProgress, ReturnsTrueIfADSCBitIsSet) {
+TEST_F(ADCIsConversionInProgress, ReturnsTrueIfADSCBitIsSet) {
     ASSERT_TRUE(adc.isConversionInProgress());
 }
 
-TEST_F(IsConversionInProgress, ReturnsFalseIfADSCBitIsCleared) {
+TEST_F(ADCIsConversionInProgress, ReturnsFalseIfADSCBitIsCleared) {
     unsetBits(ADCSRA, ADSC);
     ASSERT_FALSE(adc.isConversionInProgress());
 }
 
-class SetTriggerMode : public Test {
+class ADCSetTriggerMode : public Test {
 public:
     static constexpr auto VOLTAGE_REFERENCE = AnalogDigitalConverter::VoltageReference::Internal1_1V;
     static constexpr auto CLOCK_PRESCALER = AnalogDigitalConverter::ClockPrescaler::SixtyFour;
 };
 
-TEST_F(SetTriggerMode, ClearsADATEBitUponDisable) {
+TEST_F(ADCSetTriggerMode, ClearsADATEBitUponDisable) {
     setBits(ADCSRA, ADATE);
 
     AnalogDigitalConverter adc{VOLTAGE_REFERENCE, CLOCK_PRESCALER,
@@ -179,18 +179,18 @@ TEST_F(SetTriggerMode, ClearsADATEBitUponDisable) {
     ASSERT_THAT(ADCSRA, BitsAreUnset(ADATE));
 }
 
-TEST_F(SetTriggerMode, AutoSetsADATEBit) {
+TEST_F(ADCSetTriggerMode, AutoSetsADATEBit) {
     AnalogDigitalConverter adc{VOLTAGE_REFERENCE, CLOCK_PRESCALER,
                                AnalogDigitalConverter::TriggerMode::Auto};
 
     ASSERT_THAT(ADCSRA, BitsAreSet(ADATE));
 }
 
-class GetResult: public Test {
+class ADCGetResult: public Test {
 public:
-    GetResult() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V,
-                      AnalogDigitalConverter::ClockPrescaler::SixtyFour,
-                      AnalogDigitalConverter::TriggerMode::Auto) {
+    ADCGetResult() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V,
+                         AnalogDigitalConverter::ClockPrescaler::SixtyFour,
+                         AnalogDigitalConverter::TriggerMode::Auto) {
         adc.startConversion();
         ADC = 0x3A4D;
     }
@@ -198,26 +198,26 @@ public:
     AnalogDigitalConverter adc;
 };
 
-TEST_F(GetResult, ReturnsADC) {
+TEST_F(ADCGetResult, ReturnsADC) {
     ASSERT_THAT(adc.getResult(), Eq(0x3A4D));
 }
 
-TEST_F(GetResult, HighByte) {
+TEST_F(ADCGetResult, HighByte) {
     ASSERT_THAT(adc.getResultHighByte(), Eq(0x3A));
 }
 
-TEST_F(GetResult, LowByte) {
+TEST_F(ADCGetResult, LowByte) {
     ASSERT_THAT(adc.getResultLowByte(), Eq(0x4D));
 }
 
-class AdjustResult : public Test {
+class ADCAdjustResult : public Test {
 public:
     static constexpr auto VOLTAGE_REFERENCE = AnalogDigitalConverter::VoltageReference::Internal1_1V;
     static constexpr auto CLOCK_PRESCALER = AnalogDigitalConverter::ClockPrescaler::Two;
     static constexpr auto TRIGGER_MODE = AnalogDigitalConverter::TriggerMode::Single;
 };
 
-TEST_F(AdjustResult, Right) {
+TEST_F(ADCAdjustResult, Right) {
     setBits(ADMUX, ADLAR);
 
     AnalogDigitalConverter(VOLTAGE_REFERENCE,
@@ -228,7 +228,7 @@ TEST_F(AdjustResult, Right) {
     ASSERT_THAT(ADMUX, BitsAreUnset(ADLAR));
 }
 
-TEST_F(AdjustResult, Left) {
+TEST_F(ADCAdjustResult, Left) {
     unsetBits(ADMUX, ADLAR);
 
     AnalogDigitalConverter(VOLTAGE_REFERENCE,
@@ -239,24 +239,24 @@ TEST_F(AdjustResult, Left) {
     ASSERT_THAT(ADMUX, BitsAreSet(ADLAR));
 }
 
-class SetChannel : public Test {
+class ADCSetChannel : public Test {
 public:
-    SetChannel() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V, 
-                       AnalogDigitalConverter::ClockPrescaler::SixtyFour, 
-                       AnalogDigitalConverter::TriggerMode::Single) { 
+    ADCSetChannel() : adc(AnalogDigitalConverter::VoltageReference::Internal1_1V, 
+                          AnalogDigitalConverter::ClockPrescaler::SixtyFour, 
+                          AnalogDigitalConverter::TriggerMode::Single) { 
         ADMUX &= 0xf0;
     }
 
     AnalogDigitalConverter adc;
 };
 
-TEST_F(SetChannel, SetsMUXBits) {
+TEST_F(ADCSetChannel, SetsMUXBits) {
     adc.setChannel(3);
 
     ASSERT_THAT(ADMUX & 0x0f, Eq(3));
 }
 
-TEST_F(SetChannel, DoesNotModifyNonMUXBits) {
+TEST_F(ADCSetChannel, DoesNotModifyNonMUXBits) {
     ADMUX = 0xa0;
 
     adc.setChannel(3);
@@ -264,7 +264,7 @@ TEST_F(SetChannel, DoesNotModifyNonMUXBits) {
     ASSERT_THAT(ADMUX & 0xf0, Eq(0xa0));
 }
 
-TEST_F(SetChannel, ClearsMUXBits) {
+TEST_F(ADCSetChannel, ClearsMUXBits) {
     adc.setChannel(3);
 
     adc.setChannel(0);

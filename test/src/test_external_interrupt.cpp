@@ -8,9 +8,13 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
+namespace {
+
 void interruptServiceRoutine() {}
 
-TEST(Set, EnablesInterrupt) {
+} // namespace
+
+TEST(ExternalInterrupt, Enable) {
     EIMSK = 0;
 
     ExternalInterrupt::set(INT0, ExternalInterrupt::Sense::Low,
@@ -19,7 +23,7 @@ TEST(Set, EnablesInterrupt) {
     ASSERT_THAT(EIMSK, BitsAreSet(INT0));
 }
 
-TEST(SetSense, Low) {
+TEST(ExternalInterrupt, SetSenseLow) {
     EICRA = 0xFF;
 
     ExternalInterrupt::set(INT0, ExternalInterrupt::Sense::Low,
@@ -28,7 +32,7 @@ TEST(SetSense, Low) {
     ASSERT_THAT(EICRA, BitsAreUnset(ISC01, ISC00));
 }
 
-TEST(SetSense, Change) {
+TEST(ExternalInterrupt, SetSenseChange) {
     EICRA = 0;
 
     ExternalInterrupt::set(INT1, ExternalInterrupt::Sense::Change,
@@ -37,7 +41,7 @@ TEST(SetSense, Change) {
     ASSERT_THAT(EICRA, BitsAreSet(ISC10));
 }
 
-TEST(SetSense, FallingEdge) {
+TEST(ExternalInterrupt, SetSenseFallingEdge) {
     EICRA = 0;
 
     ExternalInterrupt::set(INT1, ExternalInterrupt::Sense::FallingEdge,
@@ -46,7 +50,7 @@ TEST(SetSense, FallingEdge) {
     ASSERT_THAT(EICRA, BitsAreSet(ISC11));
 }
 
-TEST(SetSense, RisingEdge) {
+TEST(ExternalInterrupt, SetSenseRisingEdge) {
     EICRA = 0;
 
     ExternalInterrupt::set(INT0, ExternalInterrupt::Sense::RisingEdge,

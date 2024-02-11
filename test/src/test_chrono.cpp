@@ -11,19 +11,19 @@ using namespace ::testing;
 using namespace avr_cpp;
 using namespace avr_cpp::Chrono;
 
-TEST(TestDuration, RepType) {
+TEST(Chrono, DurationStoresRepType) {
     const auto result = std::is_same_v<typename Duration<float>::rep, 
                                        float>;
     ASSERT_TRUE(result);
 }
 
-TEST(TestDuration, PeriodType) {
+TEST(Chrono, DurationStoresPeriodType) {
     const auto result = std::is_same_v<typename Duration<int, Milli>::period, 
                                        Milli>;
     ASSERT_TRUE(result);
 }
 
-TEST(TestDuration, ReducesPeriod) {
+TEST(Chrono, DurationConstructionReducesPeriod) {
     using period = Duration<int, Ratio<25, 30>>::period;
     constexpr auto gcd = std::gcd(25, 30);
 
@@ -31,31 +31,31 @@ TEST(TestDuration, ReducesPeriod) {
     ASSERT_THAT(period::den, Eq(30 / gcd));
 }
 
-TEST(DefaultConstruction, SetsZeroTickCount) {
+TEST(Chrono, DefaultDurationConstructionSetsZeroTickCount) {
     Duration<int> duration;
 
     ASSERT_THAT(duration.count(), Eq(0));
 }
 
-TEST(Construction, SetsTickCount) {
+TEST(Chrono, DurationConstructionSetsTickCount) {
     Duration<float> duration(4.2f);
 
     ASSERT_THAT(duration.count(), FloatEq(4.2f));
 }
 
-TEST(Construction, InvalidConstruction) {
+TEST(Chrono, InvalidDurationConstruction) {
     Duration<float> duration;
 }
 
-TEST(TestIsDuration, False) {
+TEST(Chrono, IsDurationFalse) {
     ASSERT_FALSE(IsDuration<float>::value);
 }
 
-TEST(TestIsDuration, True) {
+TEST(Chrono, IsDurationTrue) {
     ASSERT_TRUE(IsDuration<Duration<int>>::value);
 }
 
-TEST(TestIsHarmonic, ReturnsFalseTypeForNonExactMultiples) {
+TEST(Chrono, IsHarmonicReturnsFalseTypeForNonExactMultiples) {
     const auto result = Duration<int, Ratio<3, 5>>
         ::isHarmonic<Ratio<3, 5 * 2>>
         ::value;
@@ -63,14 +63,14 @@ TEST(TestIsHarmonic, ReturnsFalseTypeForNonExactMultiples) {
     ASSERT_FALSE(result);
 }
 
-TEST(TestIsHarmonic, ReturnsTrueTypeForExactMultiples) {
+TEST(Chrono, IsHarmonicReturnsTrueTypeForExactMultiples) {
     const auto result = Duration<int, Ratio<3, 5>>
         ::isHarmonic<Ratio<3 * 7, 5>>
         ::value;
     ASSERT_TRUE(result);
 }
 
-TEST(TestDurationCommonType, ReturnsCommonRepType) {
+TEST(Chrono, CommonDurationRepType) {
     using commonDuration = etl::common_type_t<Duration<int>, Duration<float>>;
 
     const auto result = std::is_same_v<commonDuration::rep, 
@@ -78,7 +78,7 @@ TEST(TestDurationCommonType, ReturnsCommonRepType) {
     ASSERT_TRUE(result);
 }
 
-TEST(TestDurationCommonType, ReturnsCommonPeriodType) {
+TEST(Chrono, CommonDurationPeriodType) {
     using commonDuration = etl::common_type_t<Duration<int, Ratio<8, 9>>, 
                                               Duration<int, Ratio<14, 27>>>;
 
@@ -86,7 +86,7 @@ TEST(TestDurationCommonType, ReturnsCommonPeriodType) {
     ASSERT_THAT(commonDuration::period::den, Eq(27));
 }
 
-TEST(DurationCast, CastsRepType) {
+TEST(Chrono, CastDurationRepType) {
     using FromDuration = Duration<int>;
     using ToDuration = Duration<float>;
 
@@ -96,7 +96,7 @@ TEST(DurationCast, CastsRepType) {
     ASSERT_TRUE(result);
 }
 
-TEST(DurationCast, CastsPeriodType) {
+TEST(Chrono, CastDurationPeriodType) {
     using FromDuration = Duration<int>;
     using ToDuration = Duration<int, Milli>;
 
@@ -105,7 +105,7 @@ TEST(DurationCast, CastsPeriodType) {
     ASSERT_THAT(decltype(duration)::period::den, Eq(1000));
 }
 
-TEST(DurationCast, AdjustsTickCount) {
+TEST(Chrono, DurationCastAdjustsTickCount) {
     constexpr auto NUM_SECONDS_PER_HOUR = 60 * 60;
 
     constexpr auto duration = durationCast<Seconds>(Hours(3));
@@ -113,149 +113,149 @@ TEST(DurationCast, AdjustsTickCount) {
     ASSERT_THAT(duration.count(), Eq(3 * NUM_SECONDS_PER_HOUR));
 }
 
-TEST(ConversionConstruction, AdjustsTickCount) {
+TEST(Chrono, DurationConstructionConvertsTickCount) {
     Duration<float> duration(Milliseconds(3843));
 
     ASSERT_THAT(duration.count(), FloatEq(3.843f));
 }
 
-TEST(Numeric, Zero) {
+TEST(Chrono, ZeroDuration) {
     ASSERT_THAT(Duration<float>::zero(), Eq(Duration<float>(0.0f)));
 }
 
-TEST(Numeric, Min) {
+TEST(Chrono, MinDuration) {
     ASSERT_THAT(Duration<float>::min(), 
                 Eq(Duration<float>(std::numeric_limits<float>::lowest())));
 }
 
-TEST(Numeric, Max) {
+TEST(Chrono, MaxDuration) {
     ASSERT_THAT(Duration<float>::max(), 
                 Eq(Duration<float>(std::numeric_limits<float>::max())));
 }
 
-TEST(Operator, Positive) {
+TEST(Chrono, DurationPositiveOperator) {
     ASSERT_THAT(+Seconds(-2), Eq(Seconds(-2)));
 }
 
-TEST(Operator, Negation) {
+TEST(Chrono, DurationNegation) {
     ASSERT_THAT(-Seconds(3), Eq(Seconds(-3)));
 }
 
-TEST(Operator, PreIncrement) {
+TEST(Chrono, DurationPreIncrement) {
     Seconds duration(4);
     ASSERT_THAT(++duration, Eq(Seconds(5)));
 }
 
-TEST(Operator, PostIncrement) {
+TEST(Chrono, DurationPostIncrement) {
     Seconds duration(4);
     ASSERT_THAT(duration++, Eq(Seconds(4)));
     ASSERT_THAT(duration, Eq(Seconds(5)));
 }
 
-TEST(Operator, PreDecrement) {
+TEST(Chrono, DurationPreDecrement) {
     Seconds duration(2);
     ASSERT_THAT(--duration, Eq(Seconds(1)));
 }
 
-TEST(Operator, PostDecrement) {
+TEST(Chrono, DurationPostDecrement) {
     Seconds duration(2);
     ASSERT_THAT(duration--, Eq(Seconds(2)));
     ASSERT_THAT(duration, Eq(Seconds(1)));
 }
 
-TEST(Operator, AdditionAssignment) {
+TEST(Chrono, DurationAdditionAssignment) {
     Seconds duration(2);
     ASSERT_THAT(duration += Seconds(5), Eq(Seconds(7)));
 }
 
-TEST(Operator, SubtractionAssignment) {
+TEST(Chrono, DurationSubtractionAssignment) {
     Seconds duration(8);
     ASSERT_THAT(duration -= Seconds(5), Eq(Seconds(3)));
 }
 
-TEST(Operator, MultiplicationAssignment) {
+TEST(Chrono, DurationMultiplicationAssignment) {
     Seconds duration(8);
     ASSERT_THAT(duration *= 4, Eq(Seconds(32)));
 }
 
-TEST(Operator, DivisionAssignment) {
+TEST(Chrono, DurationDivisionAssignment) {
     Seconds duration(8);
     ASSERT_THAT(duration /= 4, Eq(Seconds(2)));
 }
 
-TEST(Operator, ModulusAssignment) {
+TEST(Chrono, DurationModulusAssignment) {
     Seconds duration(9);
     ASSERT_THAT(duration %= 5, Eq(Seconds(4)));
 }
 
-TEST(Operator, Addition) {
+TEST(Chrono, DurationAddition) {
     ASSERT_THAT(Duration<float>(1.63f) + Milliseconds(2358),
                 Eq(Milliseconds(3988)));
 }
 
-TEST(Operator, Subtraction) {
+TEST(Chrono, DurationSubtraction) {
     ASSERT_THAT(Duration<float>(1.63f) - Milliseconds(510),
                 Eq(Duration<float>(1.12)));
 }
 
-TEST(Operator, MultiplyDurationByValue) {
+TEST(Chrono, MultiplyDurationByValue) {
     ASSERT_THAT(Seconds(4) * 3.2f,
                 Eq(Duration<float>(12.8f)));
 }
 
-TEST(Operator, MultiplyValueByDuration) {
+TEST(Chrono, MultiplyValueByDuration) {
     ASSERT_THAT(2.1f * Seconds(4),
                 Eq(Duration<float>(8.4f)));
 }
 
-TEST(Operator, DivideDurationByValue) {
+TEST(Chrono, DivideDurationByValue) {
     ASSERT_THAT(Seconds(1) / 2.0f,
                 Eq(Milliseconds(500)));
 }
 
-TEST(Operator, DivideDurationByDuration) {
+TEST(Chrono, DivideDurationByDuration) {
     ASSERT_THAT(Milliseconds(100) / Duration<float>(4),
                 FloatEq(0.025f));
 }
 
-TEST(Operator, ModulusDurationByValue) {
+TEST(Chrono, ModulusDurationByValue) {
     ASSERT_THAT(Milliseconds(10) % 7,
                 Milliseconds(3));
 }
 
-TEST(Operator, ModulusDurationByDuration) {
+TEST(Chrono, ModulusDurationByDuration) {
     ASSERT_THAT(Seconds(10) % Milliseconds(3000),
                 Eq(Seconds(1)));
 }
 
-TEST(Comparison, Equality) {
+TEST(Chrono, DurationEquality) {
     ASSERT_TRUE(Duration<float>(4.21) == Milliseconds(4210));
 }
 
-TEST(Comparison, InEquality) {
+TEST(Chrono, DurationInEquality) {
     ASSERT_TRUE(Milliseconds(4000) != Milliseconds(4001));
 }
 
-TEST(Comparison, Less) {
+TEST(Chrono, DurationLess) {
     ASSERT_TRUE(Milliseconds(5001) < Duration<float>(5.002));
 }
 
-TEST(LessEqual, ReturnsTrueIfLess) {
+TEST(Chrono, DurationLessEqualReturnsTrueIfLess) {
     ASSERT_TRUE(Milliseconds(5001) <= Duration<float>(5.002));
 }
 
-TEST(LessEqual, ReturnsTrueIfEqual) {
+TEST(Chrono, DurationLessEqualReturnsTrueIfEqual) {
     ASSERT_TRUE(Milliseconds(5002) <= Duration<float>(5.002));
 }
 
-TEST(Comparison, Greater) {
+TEST(Chrono, DurationGreater) {
     ASSERT_TRUE(Milliseconds(5003) > Duration<float>(5.002));
 }
 
-TEST(GreaterEqual, ReturnsTrueIfGreater) {
+TEST(Chrono, DurationGreaterEqualReturnsTrueIfGreater) {
     ASSERT_TRUE(Milliseconds(5003) >= Duration<float>(5.002));
 }
 
-TEST(GreaterEqual, ReturnsTrueIfEqual) {
+TEST(Chrono, DurationGreaterEqualReturnsTrueIfEqual) {
     ASSERT_TRUE(Milliseconds(5003) >= Duration<float>(5.003));
 }

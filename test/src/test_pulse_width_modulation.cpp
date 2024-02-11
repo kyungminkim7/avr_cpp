@@ -8,7 +8,7 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-TEST(Construction, SetsFastPWMMode) {
+TEST(PWM, ConstructorSetsFastPWMMode) {
     TCCR0A = 0;
     TCCR0B = 0xFF;
     
@@ -18,7 +18,7 @@ TEST(Construction, SetsFastPWMMode) {
     ASSERT_THAT(TCCR0B, BitsAreUnset(WGM02));
 }
 
-TEST(SetNonInvertingCompareOutputMode, One) {
+TEST(PWM, SetNonInvertingCompareOutputMode) {
     TCCR2A = 0;
     setBits(TCCR2A, COM2A0);
 
@@ -28,7 +28,7 @@ TEST(SetNonInvertingCompareOutputMode, One) {
     ASSERT_THAT(TCCR2A, BitsAreSet(COM2A1));
 }
 
-TEST(SetNonInvertingCompareOutputMode, Multiple) {
+TEST(PWM, SetNonInvertingCompareOutputModeOnMultipleChannels) {
     TCCR0A = 0;
     setBits(TCCR0A, COM0A0);
     setBits(TCCR0A, COM0B0);
@@ -42,7 +42,7 @@ TEST(SetNonInvertingCompareOutputMode, Multiple) {
     ASSERT_THAT(TCCR0A, BitsAreSet(COM0B1));
 }
 
-TEST(SetDutyCycle, OneChannel) {
+TEST(PWM, SetDutyCycle) {
     OCR2B = 0;
     PulseWidthModulation2_1024 pwm(Timer::Channel::B);
 
@@ -51,7 +51,7 @@ TEST(SetDutyCycle, OneChannel) {
     ASSERT_THAT(OCR2B, Eq(115));
 }
 
-TEST(SetDutyCycle, MultipleChannels) {
+TEST(PWM, SetDutyCycleOnMultipleChannels) {
     OCR0A = 0;
     OCR0B = 0;
     PulseWidthModulation0_1024 pwm(Timer::Channel::A | Timer::Channel::B);
@@ -62,7 +62,7 @@ TEST(SetDutyCycle, MultipleChannels) {
     ASSERT_THAT(OCR0B, Eq(112));
 }
 
-TEST(SetDutyCycle, SelectChannel) {
+TEST(PWM, SetDutyCycleOnSelectedChannels) {
     OCR0A = 0;
     OCR0B = 0;
     PulseWidthModulation0_1024 pwm(Timer::Channel::A | Timer::Channel::B);
@@ -73,7 +73,7 @@ TEST(SetDutyCycle, SelectChannel) {
     ASSERT_THAT(OCR0B, Eq(112));
 }
 
-TEST(StartSetsClockPrescaler, One) {
+TEST(PWM, StartSetsClockPrescalerToOne) {
     TCCR0B = 0;
     setBits(TCCR0B, CS02, CS01);
 
@@ -84,7 +84,7 @@ TEST(StartSetsClockPrescaler, One) {
     ASSERT_THAT(TCCR0B, BitsAreUnset(CS02, CS01));
 }
 
-TEST(StartSetsClockPrescaler, Eight) {
+TEST(PWM, StartSetsClockPrescalerToEight) {
     TCCR2B = 0;
     setBits(TCCR2B, CS22, CS20);
 
@@ -95,7 +95,7 @@ TEST(StartSetsClockPrescaler, Eight) {
     ASSERT_THAT(TCCR2B, BitsAreUnset(CS22, CS20));
 }
 
-TEST(Stop, ClearsClockSelectBits) {
+TEST(PWM, StopClearsClockSelectBits) {
     PulseWidthModulation2_1024 pwm(Timer::Channel::A);
     pwm.start();
 
@@ -104,18 +104,18 @@ TEST(Stop, ClearsClockSelectBits) {
     ASSERT_THAT(TCCR2B, BitsAreUnset(CS22, CS21, CS20));
 }
 
-class Destruction : public Test {
+class PWMDestruction : public Test {
 public:
-    Destruction() {
+    PWMDestruction() {
         PulseWidthModulation2_1024 pwm(Timer::Channel::A | Timer::Channel::B);
         pwm.start();
     }
 };
 
-TEST(Destruction, StopsPwm) {
+TEST(PWMDestructor, StopsPwm) {
     ASSERT_THAT(TCCR2B, BitsAreUnset(CS22, CS21, CS20));
 }
 
-TEST(Destruction, DisconnectsOutputComparePins) {
+TEST(PWMDestructor, DisconnectsOutputComparePins) {
     ASSERT_THAT(TCCR2A, BitsAreUnset(COM2A1, COM2A0, COM2B1, COM2B0));
 }

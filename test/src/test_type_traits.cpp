@@ -5,30 +5,30 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-TEST(TestSign, ReturnsOneForPositiveNumbers) {
+TEST(TypeTraits, SignReturnsOneForPositiveNumbers) {
     ASSERT_THAT(Sign<50>::value, Eq(1));
 }
 
-TEST(TestSign, ReturnsMinusOneForNegativeNumbers) {
+TEST(TypeTraits, SignReturnsMinusOneForNegativeNumbers) {
     ASSERT_THAT(Sign<-23>::value, Eq(-1));
 }
 
-TEST(TestAbsoluteValue, PositiveNumbers) {
+TEST(TypeTraits, PositiveAbsoluteValue) {
     ASSERT_THAT(AbsoluteValue<40>::value, Eq(40));
 }
 
-TEST(TestAbsoluteValue, NegativeNumbers) {
+TEST(TypeTraits, NegativeAbsoluteValue) {
     ASSERT_THAT(AbsoluteValue<-38>::value, Eq(38));
 }
 
-TEST(TestGreatestCommonDivisor, ReturnsGCD) {
+TEST(TypeTraits, GreatestCommonDivisor) {
     const auto result = GreatestCommonDivisor<30, 20>::value;
     ASSERT_THAT(result, Eq(10));
 }
 
 enum class ScopedEnumUint8 : uint8_t {};
 
-TEST(TestUnderlyingType, ReturnsScopedEnumUnderlyingType) {
+TEST(TypeTraits, ScopedEnumUnderlyingType) {
     const auto result = std::is_same_v<
         uint8_t, 
         UnderlyingType<ScopedEnumUint8>

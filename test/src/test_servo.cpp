@@ -11,7 +11,7 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-TEST(Construction, SetsFastPWMInputCaptureMode) {
+TEST(Servo, ConstructorSetsFastPWMInputCaptureMode) {
     TCCR1A = 0;
     setBits(TCCR1A, WGM10);
 
@@ -22,7 +22,7 @@ TEST(Construction, SetsFastPWMInputCaptureMode) {
     ASSERT_THAT(TCCR1B, BitsAreSet(WGM13, WGM12));
 }
 
-TEST(SetClockPrescaler, OneMicrosecondResolution) {
+TEST(Servo, SetClockPrescalerOneMicrosecondResolution) {
     TCCR1B = 0;
 
     Servo1 servo(Timer::Channel::A);
@@ -32,7 +32,7 @@ TEST(SetClockPrescaler, OneMicrosecondResolution) {
                               BitsAreSet(CS10)));
 }
 
-TEST(SetPeriod, SetsInputCaptureRegister) {
+TEST(Servo, SetsInputCaptureRegisterToPeriod) {
     const auto MIN_PULSE = Chrono::Milliseconds(1);
     const auto MAX_PULSE = Chrono::Milliseconds(2);
     ICR1 = 0;
@@ -44,7 +44,7 @@ TEST(SetPeriod, SetsInputCaptureRegister) {
     ASSERT_THAT(ICR1, Eq(15'000));
 }
 
-TEST(Construction, EnableOneChannel) {
+TEST(Servo, ContructorEnableChannel) {
     TCCR1A = 0;
     setBits(TCCR1A, COM1B0);
 
@@ -54,7 +54,7 @@ TEST(Construction, EnableOneChannel) {
     ASSERT_THAT(TCCR1A, BitsAreSet(COM1B1));
 }
 
-TEST(Construction, EnableMultipleChannels) {
+TEST(Servo, ConstructorEnableMultipleChannels) {
     TCCR1A = 0;
     setBits(TCCR1A, COM1A0, COM1B0);
 
@@ -64,7 +64,7 @@ TEST(Construction, EnableMultipleChannels) {
     ASSERT_THAT(TCCR1A, BitsAreSet(COM1B1, COM1B1));
 }
 
-class SetPosition : public Test {
+class ServoSetPosition : public Test {
 public:
     static constexpr Chrono::Microseconds MIN_PULSE{991};
     static constexpr Chrono::Microseconds MAX_PULSE{1994};
@@ -75,28 +75,28 @@ public:
     Servo1 servo{Timer::Channel::A | Timer::Channel::B, 
                  MIN_PULSE, MAX_PULSE, PERIOD, MIN_ANGLE, MAX_ANGLE};
 
-    SetPosition() {
+    ServoSetPosition() {
         OCR1A = 0;
         OCR1B = 0;
     }
 };
 
-const Degree<float> SetPosition::MIN_ANGLE = 18.0f;
-const Degree<float> SetPosition::MAX_ANGLE = 178.0f;
+const Degree<float> ServoSetPosition::MIN_ANGLE = 18.0f;
+const Degree<float> ServoSetPosition::MAX_ANGLE = 178.0f;
 
-TEST_F(SetPosition, Min) {
+TEST_F(ServoSetPosition, Min) {
     servo.setPosition(MIN_ANGLE, Timer::Channel::B);
 
     ASSERT_THAT(OCR1B, Eq(MIN_PULSE.count()));
 }
 
-TEST_F(SetPosition, Max) {
+TEST_F(ServoSetPosition, Max) {
     servo.setPosition(MAX_ANGLE, Timer::Channel::B);
 
     ASSERT_THAT(OCR1B, Eq(MAX_PULSE.count()));
 }
 
-TEST_F(SetPosition, Mid) {
+TEST_F(ServoSetPosition, Mid) {
     const auto midAngle = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2;
     const auto midPulse = MIN_PULSE.count() + 
         (MAX_PULSE.count() - MIN_PULSE.count()) / 2;
@@ -106,27 +106,27 @@ TEST_F(SetPosition, Mid) {
     ASSERT_THAT(OCR1A, Eq(midPulse));
 }
 
-TEST_F(SetPosition, OutOfBoundsLower) {
+TEST_F(ServoSetPosition, OutOfBoundsLower) {
     servo.setPosition(MIN_ANGLE - 1,
                       Timer::Channel::A);
 
     ASSERT_THAT(OCR1A, Eq(MIN_PULSE.count()));
 }
 
-TEST_F(SetPosition, OutOfBoundsUpper) {
+TEST_F(ServoSetPosition, OutOfBoundsUpper) {
     servo.setPosition(MAX_ANGLE + 1,
                       Timer::Channel::A);
 
     ASSERT_THAT(OCR1A, Eq(MAX_PULSE.count()));
 }
 
-TEST_F(SetPosition, OneChannel) {
+TEST_F(ServoSetPosition, OneChannel) {
     servo.setPosition(MAX_ANGLE, Timer::Channel::A);
 
     ASSERT_THAT(OCR1B, Eq(0));
 }
 
-TEST_F(SetPosition, DefaultChannels) {
+TEST_F(ServoSetPosition, DefaultChannels) {
     servo.setPosition(MAX_ANGLE);
 
     ASSERT_THAT(OCR1A, Gt(0));

@@ -1,66 +1,33 @@
-include(CMakePackageConfigHelpers)
+find_package(GTest REQUIRED CONFIG)
 include(GoogleTest)
 
-include(GetGoogleTest)
+add_executable(avr_cpp_test
+    src/test_analog_digital_converter.cpp
+    src/test_angle.cpp
+    src/test_bit.cpp
+    src/test_chrono.cpp
+    src/test_external_interrupt.cpp
+    src/test_math.cpp
+    src/test_pin_change_interrupt.cpp
+    src/test_port.cpp
+    src/test_pulse_width_modulation.cpp
+    src/test_ratio.cpp
+    src/test_servo.cpp
+    src/test_timer.cpp
+    src/test_type_traits.cpp
+    src/test_usart.cpp
+)
 
-add_subdirectory(avr_cpp_test)
+target_include_directories(avr_cpp_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>"
+)
 
-function(add_avr_test)
-    set(optionalArgs "")
-    set(oneValueArgs TARGET SOURCE)
-    set(multipleValueArgs "")
-    cmake_parse_arguments(AVRTEST
-        "${optionalArgs}" "${oneValueArgs}" "${multipleValueArgs}" "${ARGV}"
-    )
+target_link_libraries(avr_cpp_test
+    avr_cpp
+    GTest::gmock
+    GTest::gtest
+    GTest::gtest_main
+)
 
-    add_executable(${AVRTEST_TARGET} ${AVRTEST_SOURCE})
-    target_link_libraries(${AVRTEST_TARGET} 
-        avr_cpp_test
-        gmock
-        gtest
-        gtest_main
-    )
-    gtest_discover_tests(${AVRTEST_TARGET})
-endfunction()
-
-add_avr_test(TARGET test_analog_digital_converter 
-             SOURCE test_analog_digital_converter.cpp)
-
-add_avr_test(TARGET test_angle
-             SOURCE test_angle.cpp)
-
-add_avr_test(TARGET test_bit
-             SOURCE test_bit.cpp)
-
-add_avr_test(TARGET test_chrono
-             SOURCE test_chrono.cpp)
-
-add_avr_test(TARGET test_external_interrupt 
-             SOURCE test_external_interrupt.cpp)
-
-add_avr_test(TARGET test_math
-             SOURCE test_math.cpp)
-
-add_avr_test(TARGET test_pin_change_interrupt 
-             SOURCE test_pin_change_interrupt.cpp)
-
-add_avr_test(TARGET test_port 
-             SOURCE test_port.cpp)
-
-add_avr_test(TARGET test_pulse_width_modulation 
-             SOURCE test_pulse_width_modulation.cpp)
-
-add_avr_test(TARGET test_ratio 
-             SOURCE test_ratio.cpp)
-
-add_avr_test(TARGET test_servo 
-             SOURCE test_servo.cpp)
-
-add_avr_test(TARGET test_timer
-             SOURCE test_timer.cpp)
-
-add_avr_test(TARGET test_type_traits 
-             SOURCE test_type_traits.cpp)
-
-add_avr_test(TARGET test_usart 
-             SOURCE test_usart.cpp)
+gtest_discover_tests(avr_cpp_test)

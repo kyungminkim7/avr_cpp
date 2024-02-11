@@ -11,14 +11,14 @@
 using namespace ::testing;
 using namespace avr_cpp;
 
-class StartSetsHighResolutionTimerPrescaler : public Test {
+class TimerSetHighResolutionPrescaler : public Test {
 public:
-    StartSetsHighResolutionTimerPrescaler() {
+    TimerSetHighResolutionPrescaler() {
         TCCR1B = 0;
     }
 };
 
-TEST_F(StartSetsHighResolutionTimerPrescaler, One) {
+TEST_F(TimerSetHighResolutionPrescaler, One) {
     HighResolutionTimer1_1 timer;
     timer.start();
 
@@ -26,7 +26,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, One) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS12, CS11));
 }
 
-TEST_F(StartSetsHighResolutionTimerPrescaler, Eight) {
+TEST_F(TimerSetHighResolutionPrescaler, Eight) {
     HighResolutionTimer1_8 timer;
     timer.start();
 
@@ -34,7 +34,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, Eight) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS12, CS10));
 }
 
-TEST_F(StartSetsHighResolutionTimerPrescaler, SixtyFour) {
+TEST_F(TimerSetHighResolutionPrescaler, SixtyFour) {
     HighResolutionTimer1_64 timer;
     timer.start();
 
@@ -42,7 +42,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, SixtyFour) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS12));
 }
 
-TEST_F(StartSetsHighResolutionTimerPrescaler, TwoHundredFiftySix) {
+TEST_F(TimerSetHighResolutionPrescaler, TwoHundredFiftySix) {
     HighResolutionTimer1_256 timer;
     timer.start();
 
@@ -50,7 +50,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, TwoHundredFiftySix) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS11, CS10));
 }
 
-TEST_F(StartSetsHighResolutionTimerPrescaler, OneThousandTwentyFour) {
+TEST_F(TimerSetHighResolutionPrescaler, OneThousandTwentyFour) {
     HighResolutionTimer1_1024 timer;
     timer.start();
 
@@ -58,7 +58,7 @@ TEST_F(StartSetsHighResolutionTimerPrescaler, OneThousandTwentyFour) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS11));
 }
 
-TEST(Start, ResetsCounterValue) {
+TEST(Timer, StartResetsCounterValue) {
     HighResolutionTimer1_1 timer;
     TCNT1 = 0xFFFF;
 
@@ -67,7 +67,7 @@ TEST(Start, ResetsCounterValue) {
     ASSERT_THAT(TCNT1, Eq(0));
 }
 
-TEST(Reset, ClearsCounterValue) {
+TEST(Timer, ResetClearsCounterValue) {
     HighResolutionTimer1_8 timer;
     TCNT1 = 0xFFFF;
 
@@ -76,7 +76,7 @@ TEST(Reset, ClearsCounterValue) {
     ASSERT_THAT(TCNT1, Eq(0));
 }
 
-TEST(Stop, ClearsClockSelectBits) {
+TEST(Timer, StopClearsClockSelectBits) {
     HighResolutionTimer1_1024 timer;
     timer.start();
 
@@ -85,7 +85,7 @@ TEST(Stop, ClearsClockSelectBits) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS12, CS11, CS10));
 }
 
-TEST(ElapsedTime, ConvertsTicksToDuration) {
+TEST(Timer, ElapsedTimeConvertsTicksToDuration) {
     constexpr auto MICROSECONDS_PER_SEC = 1'000'000ul;
     using HiResTimer = HighResolutionTimer1_64;
     HiResTimer timer;
@@ -99,7 +99,7 @@ TEST(ElapsedTime, ConvertsTicksToDuration) {
                                         Chrono::SystemClock::frequency)));
 }
 
-TEST(NormalMode, SetsWaveformGenerationMode) {
+TEST(Timer, NormalModeSetsWaveformGenerationModeBits) {
     TCCR1A = 0xFF;
     TCCR1B = 0xFF;
 
@@ -109,13 +109,13 @@ TEST(NormalMode, SetsWaveformGenerationMode) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(WGM13, WGM12));
 }
 
-class SpecifiedPeriod : public Test {
+class TimerPeriod : public Test {
 public:
     static constexpr auto NUM_MILLISECONDS = 500;
     static constexpr auto PERIOD = Chrono::Milliseconds(NUM_MILLISECONDS);
 };
 
-TEST_F(SpecifiedPeriod, SetsClearTimerOnCompareMatchWaveformGenerationMode) {
+TEST_F(TimerPeriod, SetsClearTimerOnCompareMatchWaveformGenerationMode) {
     TCCR1A = 0xFF;
     TCCR1B = 0;
 
@@ -127,7 +127,7 @@ TEST_F(SpecifiedPeriod, SetsClearTimerOnCompareMatchWaveformGenerationMode) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(WGM13));
 }
 
-TEST_F(SpecifiedPeriod, SetsOutputCompareRegister) {
+TEST_F(TimerPeriod, SetsOutputCompareRegister) {
     static constexpr auto MICROS_PER_MILLI = 1000;
     HighResolutionTimer1_64 timer(PERIOD, Timer::PinMode::Toggle, 
                                   Timer::Mode::SingleShot);
@@ -136,47 +136,47 @@ TEST_F(SpecifiedPeriod, SetsOutputCompareRegister) {
                           HighResolutionTimer1_64::prescaler / MICROS_PER_MILLI));
 }
 
-class SetPinMode : public Test {
+class TimerSetPinMode : public Test {
 public:
     using HiResTimer = HighResolutionTimer1_1024;
 
     static constexpr auto PERIOD = Chrono::Milliseconds(500);
     
-    SetPinMode() {
+    TimerSetPinMode() {
         TCCR1A = 0;
     }
 };
 
-TEST_F(SetPinMode, Toggle) {
+TEST_F(TimerSetPinMode, Toggle) {
     HiResTimer timer(PERIOD, Timer::PinMode::Toggle, Timer::Mode::SingleShot);
 
     ASSERT_THAT(TCCR1A, BitsAreUnset(COM1B1));
     ASSERT_THAT(TCCR1A, BitsAreSet(COM1B0));
 }
 
-TEST_F(SetPinMode, Clear) {
+TEST_F(TimerSetPinMode, Clear) {
     HiResTimer timer(PERIOD, Timer::PinMode::Clear, Timer::Mode::Repeat);
 
     ASSERT_THAT(TCCR1A, BitsAreSet(COM1A1));
     ASSERT_THAT(TCCR1A, BitsAreUnset(COM1A0));
 }
 
-TEST_F(SetPinMode, Set) {
+TEST_F(TimerSetPinMode, Set) {
     HiResTimer timer(PERIOD, Timer::PinMode::Set, Timer::Mode::Repeat);
 
     ASSERT_THAT(TCCR1A, BitsAreSet(COM1A1, COM1A0));
 }
 
-class SetInterruptServiceRoutine : public Test {
+class TimerInterruptServiceRoutine : public Test {
 public:
     using HiResTimer = HighResolutionTimer1_8;
 
     static constexpr auto PERIOD = Chrono::Milliseconds(500);
 };
 
-void interruptServiceRoutine() {}
+static void interruptServiceRoutine() {}
 
-TEST_F(SetInterruptServiceRoutine, enablesOutputCompareMatchInterrupt) {
+TEST_F(TimerInterruptServiceRoutine, enablesOutputCompareMatchInterrupt) {
     TIMSK1 = 0;
 
     HiResTimer timer(PERIOD, InterruptServiceRoutine::create<interruptServiceRoutine>(), 
@@ -185,26 +185,26 @@ TEST_F(SetInterruptServiceRoutine, enablesOutputCompareMatchInterrupt) {
     ASSERT_THAT(TIMSK1, BitsAreSet(OCIE1B));
 }
 
-class Destruction : public Test {
+class TimerDestructor : public Test {
 public:
     using HiResTimer = HighResolutionTimer1_1;
 
-    Destruction() {
+    TimerDestructor() {
         HiResTimer timer(HiResTimer::duration(40), 
                          InterruptServiceRoutine::create<interruptServiceRoutine>(),
                          Timer::Mode::SingleShot);
     }
 };
 
-TEST_F(Destruction, StopsTimer) {
+TEST_F(TimerDestructor, StopsTimer) {
     ASSERT_THAT(TCCR1B, BitsAreUnset(CS12, CS11, CS10));
 }
 
-TEST_F(Destruction, DisablesInterrupts) {
+TEST_F(TimerDestructor, DisablesInterrupts) {
     ASSERT_THAT(TIMSK1, BitsAreUnset(ICIE1, OCIE1B, OCIE1A, TOIE1));
 }
 
-TEST_F(Destruction, DisconnectsOutputComparePins) {
+TEST_F(TimerDestructor, DisconnectsOutputComparePins) {
     {
         HiResTimer timer(HiResTimer::duration(40), 
                          Timer::PinMode::Toggle,
