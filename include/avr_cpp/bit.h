@@ -5,11 +5,8 @@ namespace avr_cpp {
 template<typename T, typename Bit>
 bool isBitInRange(Bit bit);
 
-template<typename T, typename Bit>
-T createBitMask(Bit bit);
-
-template<typename T, typename Bit, typename... Bits>
-T createBitMask(Bit bit, Bits... bits);
+template<typename T, typename... Bits>
+T createBitMask(Bits... bits);
 
 template<typename T, typename... Bits>
 void setBits(T &value, Bits... bits);

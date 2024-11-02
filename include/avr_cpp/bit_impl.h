@@ -4,18 +4,13 @@ namespace avr_cpp {
 
 template<typename T, typename Bit>
 bool isBitInRange(Bit bit) {
-    return bit >= static_cast<Bit>(0) && 
+    return bit >= Bit{0} && 
         bit < static_cast<Bit>(sizeof(T)) * static_cast<Bit>(CHAR_BIT);
 }
 
-template<typename T, typename Bit>
-T createBitMask(Bit bit) {
-    return static_cast<T>(1) << bit;
-}
-
-template<typename T, typename Bit, typename... Bits>
-T createBitMask(Bit bit, Bits... bits) {
-    return createBitMask<T>(bit) | createBitMask<T>(bits...);
+template<typename T, typename... Bits>
+T createBitMask(Bits... bits) {
+    return (... | (T{1} << bits));
 }
 
 template<typename T, typename... Bits>

@@ -1,5 +1,7 @@
-**/*.swp
+.conan2/
+.vscode/
 build/
 venv/
-.vscode/
+
+**/*.swp
 CMakeUserPresets.json
